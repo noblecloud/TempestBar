@@ -18,12 +18,13 @@ Run with
 	python main.py
 
 ## TODO:
- - [x] Display incoming UDP data
- - [ ] Implement minimize to tray/status bar usage to display temperature or selected measurement
- - [ ] Add derived measurements
- - [ ] GUI configuration editor
- - [ ] Auto hide irrelevant sections
- - [ ] Add display of UDP datagram history
- - [ ] Plot data over time
- - [ ] Add support for multiple devices and hubs
- - [ ] BLE Subscription?
+- [x] Display incoming UDP data
+- [ ] Add support for websocket subscription
+- [ ] Implement minimize to tray/status bar usage to display temperature or selected measurement
+- [ ] Add derived measurements
+- [ ] GUI configuration editor
+- [ ] Auto hide irrelevant sections
+- [ ] Add display of UDP datagram history
+- [ ] Plot data over time
+- [ ] Add support for multiple devices and hubs
+- [ ] BLE Subscription?
