@@ -6,6 +6,7 @@ A very simple proof of concept for displaying UDP data on a desktop using Python
 ## Requirements:
  - [Python 3.9](https://www.python.org/downloads/)
  - [PySide6](https://pypi.org/project/PySide6/)
+ - WeatherFlow Station (only tested with [Tempest](https://weatherflow.com/tempest-weather-system/)) on the same network
 
 ## Usage:
 Install PySide6 with
@@ -25,3 +26,4 @@ Run with
  - [ ] Add display of UDP datagram history
  - [ ] Plot data over time
  - [ ] Add support for multiple devices and hubs
+ - [ ] BLE Subscription?
