@@ -47,10 +47,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.irradiance.setText(event.irradiance.withUnit)
 			self.uv.setText(str(event.uvi))
 
-			# Storm
-			self.strikes.setText(str(event.strikes))
-			self.strikeDistance.setText(event.strikeDistance.withUnit)
-			self.precip.setText(event.accumulation.withUnit)
+			# Sky
+			if event.strikes + event.precipRate > 0:
+				self.skyGroup.setDisabled(False)
+				if event.strikes:
+					self.strikes.show()
+					self.strikesLabel.show()
+					self.strikeDistance.show()
+					self.strikeDistanceLabel.show()
+					self.strikes.setText(str(event.strikes))
+					self.strikeDistance.setText(event.strikeDistance.withUnit)
+				else:
+					self.strikes.hide()
+					self.strikesLabel.hide()
+					self.strikeDistance.hide()
+					self.strikeDistanceLabel.hide()
+
+				if event.precipRate > 0:
+					self.precipRate.show()
+					self.precipRateLabel.show()
+					self.precipRate.setText(event.precipRate.withUnit)
+				else:
+					self.precipRate.hide()
+					self.precipRateLabel.hide()
+				self.accumulationLabel.hide()
+				self.accumulation.hide()
+			else:
+				self.skyGroup.setDisabled(True)
 
 			# Status
 			self.deviceBattery.setText(event.battery.withUnit)

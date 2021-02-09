@@ -43,7 +43,6 @@ classAtlas = {
 
 		'battery':            Volts,
 		'reportInterval':     Minute
-
 }
 
 
@@ -326,7 +325,7 @@ class TempestMessage(UDPObservation):
 		return self.data['uvi']
 
 	@property
-	def accumulation(self) -> Length:
+	def precipRate(self) -> Length:
 		return self.data['accumulation']
 
 	@property
@@ -435,9 +434,9 @@ class UDPMessenger(QObject):
 				self.signal.emit(message)
 
 	def testMessage(self):
-		# sample = {'serial_number': 'ST-00024322', 'type': 'obs_st', 'hub_sn': 'HB-00040538', 'obs': [[1612817710, 0.0, 0.49, 1.21, 117, 3, 1030.06, 4.16, 42.16, 12326, 0.4, 103, 0.0, 0, 0, 0, 2.825, 1]], 'firmware_revision': 134}
-		sample = {'serial_number': 'ST-00024322', 'type': 'device_status', 'hub_sn': 'HB-00040538', 'timestamp': 1612834329, 'uptime': 2876646, 'voltage': 2.73, 'firmware_revision': 134, 'rssi': -61, 'hub_rssi': -62, 'sensor_status': 8+16,
-		          'debug': 0}
+		sample = {'serial_number': 'ST-00024322', 'type': 'obs_st', 'hub_sn': 'HB-00040538', 'obs': [[1612817710, 0.0, 0.49, 1.21, 117, 3, 1030.06, 4.16, 42.16, 12326, 0.4, 103, 0.0, 0, 0, 0, 2.825, 1]], 'firmware_revision': 134}
+		# sample = {'serial_number': 'ST-00024322', 'type': 'device_status', 'hub_sn': 'HB-00040538', 'timestamp': 1612834329, 'uptime': 2876646, 'voltage': 2.73, 'firmware_revision': 134, 'rssi': -61, 'hub_rssi': -62, 'sensor_status': 8+16,
+		#           'debug': 0}
 		messageType = self.messageTypes[sample['type']]
 		return messageType(sample)
 

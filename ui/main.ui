@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1146</width>
-    <height>574</height>
+    <width>896</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,44 +111,17 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QGroupBox" name="stormGroup">
+     <widget class="QGroupBox" name="skyGroup">
       <property name="font">
        <font>
         <pointsize>34</pointsize>
        </font>
       </property>
       <property name="title">
-       <string>Storm</string>
+       <string>Sky</string>
       </property>
-      <layout class="QGridLayout" name="stormGridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="precipLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Accumulation:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="precip">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string>precipitationHourlyRaw</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
+      <layout class="QGridLayout" name="skuGridLayout">
+       <item row="2" column="1">
         <widget class="QLabel" name="strikes">
          <property name="font">
           <font>
@@ -163,7 +136,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="0">
         <widget class="QLabel" name="strikesLabel">
          <property name="font">
           <font>
@@ -173,21 +146,42 @@
          <property name="text">
           <string>Strikes:</string>
          </property>
+         <property name="buddy">
+          <cstring>strikes</cstring>
+         </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="strikeDistanceLabel">
+       <item row="0" column="0">
+        <widget class="QLabel" name="precipRateLabel">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>Strike Distance:</string>
+          <string>Precipitation Rate</string>
+         </property>
+         <property name="buddy">
+          <cstring>precipRate</cstring>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="0" column="1">
+        <widget class="QLabel" name="precipRate">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="measurement" stdset="0">
+          <string>precipitationHourlyRaw</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
         <widget class="QLabel" name="strikeDistance">
          <property name="font">
           <font>
@@ -199,6 +193,48 @@
          </property>
          <property name="measurement" stdset="0">
           <string>lightningDistance</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="strikeDistanceLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Strike Distance:</string>
+         </property>
+         <property name="buddy">
+          <cstring>strikeDistance</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="accumulationLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Accumulation</string>
+         </property>
+         <property name="buddy">
+          <cstring>accumulation</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="accumulation">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
@@ -714,7 +750,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1146</width>
+     <width>896</width>
      <height>24</height>
     </rect>
    </property>

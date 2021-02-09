@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1146, 574)
+        MainWindow.resize(896, 540)
         MainWindow.setWindowTitle(u"WeatherFlowUDP")
         self.actionTest = QAction(MainWindow)
         self.actionTest.setObjectName(u"actionTest")
@@ -75,49 +75,61 @@ class Ui_MainWindow(object):
 
         self.mainGridLayout.addWidget(self.hubGroup, 1, 2, 1, 1)
 
-        self.stormGroup = QGroupBox(self.centralwidget)
-        self.stormGroup.setObjectName(u"stormGroup")
-        self.stormGroup.setFont(font)
-        self.stormGridLayout = QGridLayout(self.stormGroup)
+        self.skyGroup = QGroupBox(self.centralwidget)
+        self.skyGroup.setObjectName(u"skyGroup")
+        self.skyGroup.setFont(font)
+        self.stormGridLayout = QGridLayout(self.skyGroup)
         self.stormGridLayout.setObjectName(u"stormGridLayout")
-        self.precipLabel = QLabel(self.stormGroup)
-        self.precipLabel.setObjectName(u"precipLabel")
-        self.precipLabel.setFont(font1)
-
-        self.stormGridLayout.addWidget(self.precipLabel, 0, 0, 1, 1)
-
-        self.precip = QLabel(self.stormGroup)
-        self.precip.setObjectName(u"precip")
-        self.precip.setFont(font1)
-
-        self.stormGridLayout.addWidget(self.precip, 0, 1, 1, 1)
-
-        self.strikes = QLabel(self.stormGroup)
+        self.strikes = QLabel(self.skyGroup)
         self.strikes.setObjectName(u"strikes")
         self.strikes.setFont(font1)
 
-        self.stormGridLayout.addWidget(self.strikes, 1, 1, 1, 1)
+        self.stormGridLayout.addWidget(self.strikes, 2, 1, 1, 1)
 
-        self.strikesLabel = QLabel(self.stormGroup)
+        self.strikesLabel = QLabel(self.skyGroup)
         self.strikesLabel.setObjectName(u"strikesLabel")
         self.strikesLabel.setFont(font1)
 
-        self.stormGridLayout.addWidget(self.strikesLabel, 1, 0, 1, 1)
+        self.stormGridLayout.addWidget(self.strikesLabel, 2, 0, 1, 1)
 
-        self.strikeDistanceLabel = QLabel(self.stormGroup)
-        self.strikeDistanceLabel.setObjectName(u"strikeDistanceLabel")
-        self.strikeDistanceLabel.setFont(font1)
+        self.precipRateLabel = QLabel(self.skyGroup)
+        self.precipRateLabel.setObjectName(u"precipRateLabel")
+        self.precipRateLabel.setFont(font1)
 
-        self.stormGridLayout.addWidget(self.strikeDistanceLabel, 2, 0, 1, 1)
+        self.stormGridLayout.addWidget(self.precipRateLabel, 0, 0, 1, 1)
 
-        self.strikeDistance = QLabel(self.stormGroup)
+        self.precipRate = QLabel(self.skyGroup)
+        self.precipRate.setObjectName(u"precipRate")
+        self.precipRate.setFont(font1)
+
+        self.stormGridLayout.addWidget(self.precipRate, 0, 1, 1, 1)
+
+        self.strikeDistance = QLabel(self.skyGroup)
         self.strikeDistance.setObjectName(u"strikeDistance")
         self.strikeDistance.setFont(font1)
 
-        self.stormGridLayout.addWidget(self.strikeDistance, 2, 1, 1, 1)
+        self.stormGridLayout.addWidget(self.strikeDistance, 3, 1, 1, 1)
+
+        self.strikeDistanceLabel = QLabel(self.skyGroup)
+        self.strikeDistanceLabel.setObjectName(u"strikeDistanceLabel")
+        self.strikeDistanceLabel.setFont(font1)
+
+        self.stormGridLayout.addWidget(self.strikeDistanceLabel, 3, 0, 1, 1)
+
+        self.accumulationLabel = QLabel(self.skyGroup)
+        self.accumulationLabel.setObjectName(u"accumulationLabel")
+        self.accumulationLabel.setFont(font1)
+
+        self.stormGridLayout.addWidget(self.accumulationLabel, 1, 0, 1, 1)
+
+        self.accumulation = QLabel(self.skyGroup)
+        self.accumulation.setObjectName(u"accumulation")
+        self.accumulation.setFont(font1)
+
+        self.stormGridLayout.addWidget(self.accumulation, 1, 1, 1, 1)
 
 
-        self.mainGridLayout.addWidget(self.stormGroup, 0, 1, 1, 1)
+        self.mainGridLayout.addWidget(self.skyGroup, 0, 1, 1, 1)
 
         self.deviceGroup = QGroupBox(self.centralwidget)
         self.deviceGroup.setObjectName(u"deviceGroup")
@@ -352,11 +364,17 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1146, 24))
+        self.menubar.setGeometry(QRect(0, 0, 896, 24))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
+#if QT_CONFIG(shortcut)
+        self.strikesLabel.setBuddy(self.strikes)
+        self.precipRateLabel.setBuddy(self.precipRate)
+        self.strikeDistanceLabel.setBuddy(self.strikeDistance)
+        self.accumulationLabel.setBuddy(self.accumulation)
+#endif // QT_CONFIG(shortcut)
 
         self.retranslateUi(MainWindow)
 
@@ -376,16 +394,18 @@ class Ui_MainWindow(object):
         self.hubFirmware.setText("")
         self.hubFirmware.setProperty("measurement", "")
         self.hubUptimeLabel.setText(QCoreApplication.translate("MainWindow", u"Uptime:", None))
-        self.stormGroup.setTitle(QCoreApplication.translate("MainWindow", u"Storm", None))
-        self.precipLabel.setText(QCoreApplication.translate("MainWindow", u"Accumulation:", None))
-        self.precip.setText("")
-        self.precip.setProperty("measurement", QCoreApplication.translate("MainWindow", u"precipitationHourlyRaw", None))
+        self.skyGroup.setTitle(QCoreApplication.translate("MainWindow", u"Sky", None))
         self.strikes.setText("")
         self.strikes.setProperty("measurement", QCoreApplication.translate("MainWindow", u"lightning", None))
         self.strikesLabel.setText(QCoreApplication.translate("MainWindow", u"Strikes:", None))
-        self.strikeDistanceLabel.setText(QCoreApplication.translate("MainWindow", u"Strike Distance:", None))
+        self.precipRateLabel.setText(QCoreApplication.translate("MainWindow", u"Precipitation Rate", None))
+        self.precipRate.setText("")
+        self.precipRate.setProperty("measurement", QCoreApplication.translate("MainWindow", u"precipitationHourlyRaw", None))
         self.strikeDistance.setText("")
         self.strikeDistance.setProperty("measurement", QCoreApplication.translate("MainWindow", u"lightningDistance", None))
+        self.strikeDistanceLabel.setText(QCoreApplication.translate("MainWindow", u"Strike Distance:", None))
+        self.accumulationLabel.setText(QCoreApplication.translate("MainWindow", u"Accumulation", None))
+        self.accumulation.setText("")
         self.deviceGroup.setTitle(QCoreApplication.translate("MainWindow", u"Device Status", None))
         self.deviceSerial.setText("")
         self.deviceSerial.setProperty("measurement", "")
