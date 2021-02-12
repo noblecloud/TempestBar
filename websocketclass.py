@@ -2,36 +2,23 @@ import asyncio
 import json
 from pprint import pprint
 
+from PySide6.QtCore import QObject, Signal
+
 import websockets
 
 from constants import classAtlas
-from messages import _TempestMessage, WindMessage
+from messages import _TempestMessage, WindMessage, WSObservation
 from units.defaults.weatherFlow import Precipitation
-
-token = 'f2f4cc66-7dec-4b09-bf64-f70c01da9690'
-uri = 'wss://ws.weatherflow.com/swd/data?token=' + token
-
-request = {
-		"type":      "listen_start",
-		"device_id": 116322,
-		"id":        "59cb18db"
-}
-
-wind = {
-		"type":      "listen_rapid_start",
-		"device_id": 116322,
-		"id":        "59cb18db"
-}
 
 
 class TempestMessageWS(_TempestMessage):
 
 	def __init__(self, messageData):
 		self.messAtlas = {'deviceID': 'device_id',
-		             'type':   'type',
-		             'data':   'obs',
-		             'source': 'source',
-		             'summary': 'summary'}
+		                  'type':     'type',
+		                  'data':     'obs',
+		                  'source':   'source',
+		                  'summary':  'summary'}
 
 		self.atlas = [*self.atlas, 'lullSpeed', 'windSpeed', 'gustSpeed',
 		              'windDirection', 'windSampleInterval', 'pressure',
@@ -65,6 +52,8 @@ class TempestMessageWS(_TempestMessage):
 		self['data'].update(summary)
 		# Always assume rainCheck is on unless specified as false
 		self['data']['rainCheck'] = False if self['data']['rainCheck'] == 2 else True
+		self.__delattr__('atlas')
+		self.__delattr__('messAtlas')
 
 	@property
 	def rainCheck(self) -> bool:
@@ -75,71 +64,51 @@ class TempestMessageWS(_TempestMessage):
 		return self.data['localDailyAccumulationRainCheck'] if self.rainCheck else self.data['dailyAccumulationRaw']
 
 
-async def connect():
-	async with websockets.connect(uri) as websocket:
-		await websocket.send(json.dumps(request))
-		await websocket.send(json.dumps(wind))
-		while True:
-			message = json.loads(await websocket.recv())
-			if message['type'] == 'rapid_wind':
-				windMessage = WindMessage(message)
-				print(windMessage.messsage)
-			elif message['type'] == 'obs_st':
-				m = TempestMessageWS(message)
-				pprint(m)
-			else:
-				pprint(message)
+class WSMessenger(QObject):
+
+	signal = Signal(WSObservation)
+
+	token = 'f2f4cc66-7dec-4b09-bf64-f70c01da9690'
+	uri = 'wss://ws.weatherflow.com/swd/data?token=' + token
+
+	deviceID = 116322
+	id = "59cb18db"
+
+	def __init__(self, loop: asyncio.AbstractEventLoop, parent=None):
+		super(WSMessenger, self).__init__(parent)
+		self.loop = loop
+
+	def start(self):
+		asyncio.ensure_future(self.connectSocket(), loop=self.loop)
+
+	def genMessage(self, messageType: str) -> dict[str:str]:
+		return {"type":      messageType,
+		        "device_id": self.deviceID,
+		        "id":        self.id}
+
+	async def connectSocket(self):
+		async with websockets.connect(self.uri) as websocket:
+			await websocket.send(json.dumps(self.genMessage('listen_start')))
+			await websocket.send(json.dumps(self.genMessage('listen_rapid_start')))
+			while True:
+				message = json.loads(await websocket.recv())
+				if message['type'] == 'rapid_wind':
+					m = WindMessage(message)
+					self.signal.emit(m)
+					print(m.messsage)
+				elif message['type'] == 'obs_st':
+					m = TempestMessageWS(message)
+					pprint(m)
+					self.signal.emit(m)
+				else:
+					pprint(message)
+
+	def work(self):
+		asyncio.ensure_future(self.connectSocket(), loop=self.loop)
 
 
-asyncio.get_event_loop().run_until_complete(connect())
-asyncio.get_event_loop().run_forever()
-
-#
-# class ListenWebsocket(QtCore.QThread):
-# 	def __init__(self, parent=None):
-# 		super(ListenWebsocket, self).__init__(parent)
-#
-# 		websockets.
-#
-# 		self.WS = websockets.WebSocketApp("ws://localhost:8080/chatsocket",
-# 		                                 on_message=self.on_message,
-# 		                                 on_error=self.on_error,
-# 		                                 on_close=self.on_close)
-#
-# 	def run(self):
-# 		# ws.on_open = on_open
-#
-# 		self.WS.run_forever()
-#
-# 	def on_message(self, ws, message):
-# 		print
-# 		message
-#
-# 	def on_error(self, ws, error):
-# 		print
-# 		error
-#
-# 	def on_close(self, ws):
-# 		print
-# 		"### closed ###"
-#
-# # personal_token = ' '
-# # tempest_ID = ' '
-#
-# # print('Opening Websocket connection...')
-# # ws = websockets.connect('wss://ws.weatherflow.com/swd/data?api_key=' + personal_token)
-# # result = ws.recv()
-# # print("Received '%s'" % result)
-# # print('')
-# #
-# # print('Listening to Tempest endpoint...')
-# # ws.send('{"type":"listen_start",' + ' "device_id":' + tempest_ID + ', "id":"Tempest"}')
-# # result =  ws.recv()
-# # print("Received '%s'" % result)
-# # print('')
-# #
-# # print('Receiving Tempest data...')
-# # while True:
-# #     result =  ws.recv()
-# #     print("Received '%s'" % result)
-# #     print('')
+if __name__ == '__main__':
+	pass
+	loop = asyncio.get_event_loop()
+	messenger = WSMessenger(loop)
+	print('test')

@@ -1,35 +1,51 @@
+import asyncio
 import sys
 from datetime import timedelta
 
 from PySide6 import QtCore
+from PySide6.QtCore import Slot, Signal
 from PySide6.QtWidgets import QApplication, QMainWindow
+from qasync import QEventLoop
+
+from messages import WindMessage, WSObservation
+from udp import DeviceStatusMessage, HubStatusMessage
 from ui.main_UI import Ui_MainWindow
-from udp import *
+from websocketclass import TempestMessageWS, WSMessenger
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+	signal = Signal(str)
 
 	def __init__(self, *args, **kwargs):
 		super(MainWindow, self).__init__(*args, **kwargs)
 		self.setupUi(self)
 		self.installEventFilter(self)
-
-		self.messenger = UDPMessenger()
-		self.messenger.signal.connect(self.updateItems)
+		loop = asyncio.get_event_loop()
+		self.worker = WSMessenger(loop)
+		self.worker.signal.connect(self.updateItems)
+		self.worker.work()
+		# self.messenger.signal.connect(self.updateItems)
 
 	def eventFilter(self, obj, event):
 		if event.type() == QtCore.QEvent.KeyPress:
 			if event.key() == QtCore.Qt.Key_R:
-				print('testEvent')
-				self.updateItems(self.messenger.testMessage())
+				self.loop.create_task(self.messenger.connectSocket())
+				# print('testEvent')
+				# self.updateItems(self.messenger.testMessage())
 		return super(MainWindow, self).eventFilter(obj, event)
 
-	def updateItems(self, event: UDPObservation):
+	@Slot(WSObservation)
+	def receive_from_worker(self, message):
+		print('message received')
+
+	@Slot(WSObservation)
+	def updateItems(self, event: WSObservation):
 
 		if isinstance(event, WindMessage):
 			value = '{} at {}'.format(event.direction.cardinal, event.speed.withUnit)
+			print('isWindMessage')
 			self.wind.setText(value)
-		if isinstance(event, TempestMessage):
+		if isinstance(event, TempestMessageWS):
 
 			# Wind Group
 			self.windAverage.setText(event.wind.withUnit)
@@ -104,6 +120,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
 	app = QApplication()
+	loop = QEventLoop(app)
+	asyncio.set_event_loop(loop)
 	window = MainWindow()
+
 	window.show()
+	with loop:
+		loop.run_forever()
+
 	sys.exit(app.exec_())
