@@ -10,40 +10,12 @@ import pytz
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtNetwork import QUdpSocket
 
+from constants import classAtlas
 from units.defaults.weatherFlow import *
-from units.length import Kilometer, Length
+from units.length import Length
 from units.others import Direction, Humidity, Lux, RadiantFlux, Volts
-from units.pressure import mmHg, Pressure
+from units.pressure import Pressure
 from units.time import Minute, Second
-
-classAtlas = {
-		'time':               int,
-		'lullSpeed':          Wind,
-		'windSpeed':          Wind,
-		'gustSpeed':          Wind,
-		'speed':              Wind,
-		'direction':          Direction,
-		'windDirection':      Direction,
-
-		'windSampleInterval': Second,
-		'pressure':           mmHg,
-		'temperature':        Heat,
-		'humidity':           Humidity,
-
-		'illuminance':        Lux,
-		'uvi':                int,
-		'irradiance':         RadiantFlux,
-		'accumulation':       Precipitation,
-
-		'precipitationType':  PrecipitationType,
-		'distance':           Kilometer,
-		'strikeDistance':     Kilometer,
-		'strikes':            int,
-		'energy':             int,
-
-		'battery':            Volts,
-		'reportInterval':     Minute
-}
 
 
 class UDPObservation(dict):
