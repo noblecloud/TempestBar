@@ -6,391 +6,118 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>896</width>
-    <height>540</height>
+    <width>1029</width>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">WeatherFlowUDP</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="mainGridLayout">
-    <item row="1" column="2">
-     <widget class="QGroupBox" name="hubGroup">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QGroupBox" name="airGroup">
       <property name="font">
        <font>
         <pointsize>34</pointsize>
+        <bold>false</bold>
        </font>
       </property>
       <property name="title">
-       <string>Hub Status</string>
+       <string>Air</string>
       </property>
-      <layout class="QGridLayout" name="hubGroupLayout">
-       <item row="1" column="0">
-        <widget class="QLabel" name="hubFirmwareLabel">
+      <layout class="QGridLayout" name="airGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="temperatureLabel">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
-          <string>Firmware:</string>
+          <string>Temperature:</string>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLabel" name="hubUptime">
+        <widget class="QLabel" name="pressure">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="measurement" stdset="0">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="hubSerialLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Serial:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="hubSerial">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="hubFirmware">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string/>
+          <string>pressure</string>
          </property>
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="hubUptimeLabel">
+        <widget class="QLabel" name="pressureLabel">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
-          <string>Uptime:</string>
+          <string>Pressure:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="temperature">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="measurement" stdset="0">
+          <string>temperature</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="humidityLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Humidity:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="humidity">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="measurement" stdset="0">
+          <string>humidity</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QGroupBox" name="skyGroup">
-      <property name="font">
-       <font>
-        <pointsize>34</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>Sky</string>
-      </property>
-      <layout class="QGridLayout" name="skuGridLayout">
-       <item row="2" column="1">
-        <widget class="QLabel" name="strikes">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string>lightning</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="strikesLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Strikes:</string>
-         </property>
-         <property name="buddy">
-          <cstring>strikes</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="precipRateLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Precipitation Rate</string>
-         </property>
-         <property name="buddy">
-          <cstring>precipRate</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="precipRate">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string>precipitationHourlyRaw</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="strikeDistance">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string>lightningDistance</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="strikeDistanceLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Strike Distance:</string>
-         </property>
-         <property name="buddy">
-          <cstring>strikeDistance</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="accumulationLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Accumulation</string>
-         </property>
-         <property name="buddy">
-          <cstring>accumulation</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="accumulation">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QGroupBox" name="deviceGroup">
-      <property name="font">
-       <font>
-        <pointsize>34</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>Device Status</string>
-      </property>
-      <layout class="QGridLayout" name="deviceGridLayout">
-       <item row="0" column="1">
-        <widget class="QLabel" name="deviceSerial">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="deviceFirmware">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="deviceFirmwareLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Firmware:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="deviceSerialLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Serial:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="deviceSensorsLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Sensors:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="deviceSensors">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="deviceUptimeLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Uptime:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="deviceUptime">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="deviceBatteryLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Battery:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="deviceBattery">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="0">
+    <item>
      <widget class="QGroupBox" name="windGroup">
       <property name="font">
        <font>
@@ -401,8 +128,20 @@
        <string>Wind</string>
       </property>
       <layout class="QGridLayout" name="windGridLayout">
-       <item row="4" column="1">
-        <widget class="QLabel" name="windDirection">
+       <item row="3" column="0">
+        <widget class="QLabel" name="windAverageLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Average:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="windAverage">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
@@ -412,46 +151,7 @@
           <string/>
          </property>
          <property name="measurement" stdset="0">
-          <string>windDirection</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="windLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Instant:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="windDirectionLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Direction:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="gust">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string>gustSpeed</string>
+          <string>windAverage</string>
          </property>
         </widget>
        </item>
@@ -464,6 +164,21 @@
          </property>
          <property name="text">
           <string>Lull:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="lull">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="measurement" stdset="0">
+          <string>lullSpeed</string>
          </property>
         </widget>
        </item>
@@ -494,8 +209,32 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="lull">
+       <item row="0" column="0">
+        <widget class="QLabel" name="windLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Instant:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="windDirectionLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Direction:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="windDirection">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
@@ -505,24 +244,12 @@
           <string/>
          </property>
          <property name="measurement" stdset="0">
-          <string>lullSpeed</string>
+          <string>windDirection</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="windAverageLabel">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Average:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="windAverage">
+       <item row="2" column="1">
+        <widget class="QLabel" name="gust">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
@@ -532,14 +259,14 @@
           <string/>
          </property>
          <property name="measurement" stdset="0">
-          <string>windAverage</string>
+          <string>gustSpeed</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="2">
+    <item>
      <widget class="QGroupBox" name="solarGroup">
       <property name="font">
        <font>
@@ -634,109 +361,137 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QGroupBox" name="airGroup">
+    <item>
+     <widget class="QGroupBox" name="skyGroup">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="font">
        <font>
         <pointsize>34</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
        </font>
       </property>
       <property name="title">
-       <string>Air</string>
+       <string>Sky</string>
       </property>
-      <layout class="QGridLayout" name="airGridLayout">
-       <item row="2" column="1">
-        <widget class="QLabel" name="pressure">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="measurement" stdset="0">
-          <string>pressure</string>
-         </property>
-        </widget>
-       </item>
+      <layout class="QGridLayout" name="stormGridLayout">
        <item row="1" column="0">
-        <widget class="QLabel" name="humidityLabel">
+        <widget class="QLabel" name="accumulationLabel">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
           </font>
          </property>
          <property name="text">
-          <string>Humidity:</string>
+          <string>Accumulation</string>
+         </property>
+         <property name="buddy">
+          <cstring>accumulation</cstring>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="pressureLabel">
+       <item row="2" column="1">
+        <widget class="QLabel" name="strikes">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Pressure:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="temperature">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
           </font>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="measurement" stdset="0">
-          <string>temperature</string>
+          <string>lightning</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLabel" name="humidity">
+        <widget class="QLabel" name="accumulation">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="strikesLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Strikes:</string>
+         </property>
+         <property name="buddy">
+          <cstring>strikes</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="precipRateLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Precipitation Rate</string>
+         </property>
+         <property name="buddy">
+          <cstring>precipRate</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="precipRate">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
           </font>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="measurement" stdset="0">
-          <string>humidity</string>
+          <string>precipitationHourlyRaw</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="temperatureLabel">
+       <item row="3" column="1">
+        <widget class="QLabel" name="strikeDistance">
          <property name="font">
           <font>
            <pointsize>24</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
           </font>
          </property>
          <property name="text">
-          <string>Temperature:</string>
+          <string/>
+         </property>
+         <property name="measurement" stdset="0">
+          <string>lightningDistance</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="strikeDistanceLabel">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Strike Distance:</string>
+         </property>
+         <property name="buddy">
+          <cstring>strikeDistance</cstring>
          </property>
         </widget>
        </item>
@@ -750,10 +505,28 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>896</width>
+     <width>1029</width>
      <height>24</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionStatus"/>
+    <addaction name="actionConfig_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionLogin"/>
+   </widget>
+   <widget class="QMenu" name="menuProtocal">
+    <property name="title">
+     <string>Protocal</string>
+    </property>
+    <addaction name="actionUDP"/>
+    <addaction name="actionWebsocket"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuProtocal"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionTest">
@@ -764,6 +537,36 @@
   <action name="actiontest">
    <property name="text">
     <string>test</string>
+   </property>
+  </action>
+  <action name="actionConfig">
+   <property name="text">
+    <string>Protocal</string>
+   </property>
+  </action>
+  <action name="actionStatus">
+   <property name="text">
+    <string>Status</string>
+   </property>
+  </action>
+  <action name="actionConfig_2">
+   <property name="text">
+    <string>Config</string>
+   </property>
+  </action>
+  <action name="actionUDP">
+   <property name="text">
+    <string>UDP</string>
+   </property>
+  </action>
+  <action name="actionWebsocket">
+   <property name="text">
+    <string>Websocket</string>
+   </property>
+  </action>
+  <action name="actionLogin">
+   <property name="text">
+    <string>Login</string>
    </property>
   </action>
  </widget>

@@ -107,8 +107,9 @@ class WSMessenger(QObject):
 		asyncio.ensure_future(self.connectSocket(), loop=self.loop)
 
 
+
 if __name__ == '__main__':
-	pass
 	loop = asyncio.get_event_loop()
-	messenger = WSMessenger(loop)
-	print('test')
+	ws = WSMessenger(loop)
+	asyncio.get_event_loop().run_until_complete(ws.connectSocket())
+	asyncio.get_event_loop().run_forever()

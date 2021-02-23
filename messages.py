@@ -27,7 +27,14 @@ class WSObservation(dict):
 
 	@staticmethod
 	def translate(udpData: dict, atlas: dict[str:str]):
-		return {key: udpData[value] for key, value in atlas.items()}
+		# return {key: udpData[value] for key, value in atlas.items()}
+		translated = {}
+		for native, foreign in atlas.items():
+			try:
+				translated.update({native: udpData[foreign]})
+			except KeyError:
+				logging.error('Unable to translate: {}'.format(native))
+		return translated
 
 	@staticmethod
 	def convert(data, atlas):
