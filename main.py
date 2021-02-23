@@ -1,6 +1,5 @@
 import asyncio
 import sys
-from datetime import timedelta
 
 from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal
@@ -11,6 +10,9 @@ from messages import WindMessage, WSObservation
 from udp import DeviceStatusMessage, HubStatusMessage
 from ui.main_UI import Ui_MainWindow
 from websocketclass import TempestMessageWS, WSMessenger
+
+
+SECOND_DISPLAY = True
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -124,6 +126,10 @@ if __name__ == '__main__':
 	asyncio.set_event_loop(loop)
 	window = MainWindow()
 
+	if SECOND_DISPLAY:
+		display = app.screens()[1]
+		window.setScreen(display)
+		window.move(display.geometry().x() + 200, display.geometry().y()+200)
 	window.show()
 	with loop:
 		loop.run_forever()
