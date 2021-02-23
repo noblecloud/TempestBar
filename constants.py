@@ -26,9 +26,10 @@ classAtlas = {
 		'irradiance':                          RadiantFlux,
 		'accumulation':                        Precipitation,
 
-		'precipitationType':                   PrecipitationType,
 		'distance':                            Kilometer,
 		'strikeDistance':                      Kilometer,
+		'strikeLastDistance':                  Kilometer,
+		'strikeLastTime':                      int,
 		'strikes':                             int,
 		"strikes1h":                           int,
 		"strikes3h":                           int,
@@ -36,6 +37,9 @@ classAtlas = {
 
 		'battery':                             Volts,
 		'reportInterval':                      Minute,
+
+		'precipitationType':                   PrecipitationType,
+		'rainingMinutes':                      list,
 		'dailyAccumulationRaw':                Precipitation,
 		'dailyAccumulationRainCheck':          bool,
 		'localDailyAccumulationRainCheck':     bool,

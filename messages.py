@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 
@@ -11,30 +11,58 @@ from units.pressure import Pressure
 from units.time import Minute, Second
 
 
-class WSObservation(dict):
-	messAtlas = {'serial': 'serial_number',
-	             'type':   'type',
-	             'hub':    'hub_sn',
-	             'data':   ''}
+class DataMessage(dict):
+
+	def __init__(self):
+		pass
+
+	@property
+	def data(self):
+		return self['data']
+
+	@property
+	def time(self) -> datetime:
+		return self.data['time']
+
+	@property
+	def reportInterval(self) -> Minute:
+		return self.data['reportInterval']
+
+
+class Observation(DataMessage):
+	messAtlas = {'serial_number': 'serial',
+	             'hub_sn':        'hub',
+	             'deviceID':      'device_id'}
+
 	atlas = ['time']
 
 	def __init__(self, udpData):
-		data = self.translate(udpData, self.messAtlas)
-		if 'data' in data:
-			data['data'] = self.convert(data['data'], self.atlas)
-			data['time'] = datetime.fromtimestamp(int(data['data'].pop('time')), pytz.timezone('America/New_York'))
-		super(WSObservation, self).__init__(data)
+		udpData = self.translate(udpData, self.messAtlas)
+		if 'data' in udpData:
+			udpData['data'] = self.convert(udpData['data'], self.atlas)
+			udpData['time'] = datetime.fromtimestamp(int(udpData['data'].pop('time')), pytz.timezone('America/New_York'))
+		self.update(udpData)
+		super(Observation, self).__init__()
 
 	@staticmethod
 	def translate(udpData: dict, atlas: dict[str:str]):
-		# return {key: udpData[value] for key, value in atlas.items()}
 		translated = {}
-		for native, foreign in atlas.items():
-			try:
-				translated.update({native: udpData[foreign]})
-			except KeyError:
-				logging.error('Unable to translate: {}'.format(native))
+		for key in udpData:
+			if key in atlas:
+				newKey = atlas[key]
+				translated[newKey] = udpData[key]
+			else:
+				translated[key] = udpData[key]
 		return translated
+
+	# return {key: udpData[value] for key, value in atlas.items()}
+	# translated = {}
+	# for native, foreign in atlas.items():
+	# 	try:
+	# 		translated.update({native: udpData[foreign]})
+	# 	except KeyError:
+	# 		logging.error('Unable to translate: {}'.format(native))
+	# return translated
 
 	@staticmethod
 	def convert(data, atlas):
@@ -55,57 +83,175 @@ class WSObservation(dict):
 					converted[key] = classAtlas[key](value)
 		return converted
 
-	@property
-	def data(self) -> dict:
-		return self['data']
-
 	def __setitem__(self, *args):
 		logging.error('UDP Messages are immutable')
 
 
-class _TempestMessage(WSObservation):
-	@property
-	def strikeDistance(self) -> Length:
-		return self.data['strikeDistance']
+class StatusMessage(dict):
+	atlas = {'time':     'timestamp',
+	         'type':     'type',
+	         'serial':   'serial_number',
+	         'uptime':   'uptime',
+	         'firmware': 'firmware_revision',
+	         'rssi':     'rssi',
+	         }
+
+	def __init__(self, udpData):
+		data = {key: udpData[value] for key, value in self.atlas.items()}
+		super(StatusMessage, self).__init__(data)
+
+	def __setitem__(self, *args):
+		logging.error('UDP Messages are immutable')
 
 	@property
-	def windSampleInterval(self) -> Second:
-		return self.data['windSampleInterval']
+	def uptime(self):
+		value = timedelta(seconds=self['uptime'])
+		if value.days > 0:
+			return "{} days".format(value.days)
+		if value.days > 30:
+			return "{:2.1f} months".format(value.days / 30.5)
+		elif value.min // 60 > 0:
+			return "{:2.1f} hours".format(value.min / 60)
+		elif value.min > 0:
+			return "{} hours".format(value.min)
+		else:
+			return "{} seconds".format(value.seconds)
 
 	@property
-	def uvi(self) -> int:
-		return self.data['uvi']
+	def firmware(self):
+		return "v{}".format(self['firmware'])
+
+	@property
+	def serial(self):
+		return "{}".format(self['serial'])
+
+
+class DeviceStatusMessage(StatusMessage):
+	atlas = {**StatusMessage.atlas,
+	         'serialHub':    'hub_sn',
+	         'battery':      'voltage',
+	         'rssiHub':      'hub_rssi',
+	         'sensorStatus': 'sensor_status',
+	         'debug':        'debug'}
+
+	deviceStatus = {0: 'All OK', 1: 'Lightning failed'}
+
+	def __init__(self, udpData):
+		super(DeviceStatusMessage, self).__init__(udpData)
+
+	@property
+	def serialHub(self):
+		return "{}".format(self['serialHub'])
+
+	@property
+	def rssi(self):
+		return str(self['rssi'])
+
+	@property
+	def battery(self) -> Volts:
+		return Volts(self['battery'])
+
+	@property
+	def rssiHub(self):
+		return str(self['rssiHub'])
+
+	@property
+	def sensorStatus(self):
+		return SensorStatus(self['sensorStatus'])
+
+
+class SensorStatus:
+	failed = []
+	masks = {
+			0b000000001: 'Lightning',
+			0b000000010: 'LightningNoise',
+			0b000000100: 'LightningDisturber',
+			0b000001000: 'Pressure',
+			0b000010000: 'Temperature',
+			0b000100000: 'Humidity',
+			0b001000000: 'Wind',
+			0b010000000: 'Precipitation',
+			0b100000000: 'Light/UV'
+	}
+
+	def __init__(self, value: int):
+		for mask in self.masks:
+			if mask & value:
+				self.failed.append(self.masks[mask])
+
+	def __str__(self):
+		failures = len(self.failed)
+		if not failures:
+			string = 'All OK'
+		elif failures == 1:
+			string = '{}: Failed'.format(self.failed[0])
+		elif failures == 2:
+			string = '{}: Failed\n{}: Failed\n'.format(self.failed[0], self.failed[1])
+		else:
+			string = 'Multiple Failures'
+		return string
+
+	def __repr__(self) -> str:
+		return str(self)
+
+
+class HubStatusMessage(StatusMessage):
+	def __init__(self, udpData):
+		super(HubStatusMessage, self).__init__(udpData)
+
+
+class RainStartMessage(Observation):
+
+	def __init__(self, udpData):
+		self.messAtlas['data'] = 'evt'
+		super().__init__(udpData)
+
+	def print(self):
+		print('Rain event started')
+
+
+class WindMessage(Observation):
+	atlas = [*Observation.atlas, 'speed', 'direction']
+
+	def __init__(self, udpData):
+		self.messAtlas['ob'] = 'data'
+
+		super(WindMessage, self).__init__(udpData)
+
+	@property
+	def speed(self) -> Wind:
+		return self.data['speed']
+
+	@property
+	def direction(self) -> Direction:
+		return self.data['direction']
+
+	@property
+	def messsage(self):
+		return 'Wind recorded {}km/h at {} ({}º)'.format(self.speed, self.direction.cardinal, self.direction)
+
+
+class LightMessage(Observation):
+	"""
+	I haven't quite figured out what this message contains.
+	I am confident the item at index 2 is irradiance, but the
+	item a index 1 alludes me.  It could be illuminance, but I
+	can not figure out what the unit is.
+	"""
+
+	atlas = [*Observation.atlas, 'illuminance', 'irradiance', 'zero', 'zero']
+
+	def __init__(self, udpData):
+		self.messAtlas['data'] = 'ob'
+		super(LightMessage, self).__init__(udpData)
+		delattr(self, 'atlas')
+
+
+class _Air(DataMessage):
 
 	@property
 	def pressure(self) -> Pressure:
 		return self.data['pressure']
-
-	@property
-	def battery(self) -> Volts:
-		return self.data['battery']
-
-	@property
-	def reportInterval(self) -> Minute:
-		return self.data['reportInterval']
-
-	@property
-	def illuminance(self) -> Lux:
-		return self.data['illuminance']
-
-	@property
-	def precipitationType(self) -> str:
-		value = self.data['precipitationType']
-		if value == 1:
-			value = 'Rain'
-		elif value == 2:
-			value = 'Hail'
-		else:
-			value = 'None'
-		return value
-
-	@property
-	def strikes(self) -> int:
-		return self.data['strikes']
 
 	@property
 	def temperature(self) -> Heat:
@@ -116,50 +262,153 @@ class _TempestMessage(WSObservation):
 		return self.data['humidity']
 
 	@property
-	def irradiance(self) -> RadiantFlux:
-		return self.data['irradiance']
+	def strikeDistance(self) -> Length:
+		return self.data['strikeDistance']
 
 	@property
-	def time(self) -> datetime:
-		return self.data['time']
+	def strikes(self) -> int:
+		return self.data['strikes']
+
+
+class AirMessage(Observation, _Air):
+	atlas = [*Observation.atlas, 'pressure', 'temperature', 'humidity', 'lightning',
+	         'lightningDistance', 'battery', 'reportInterval']
+
+	def __init__(self, udpData):
+		self.messAtlas['obs'] = 'data'
+		super(AirMessage, self).__init__(udpData)
+
+
+class _Sky(DataMessage):
+	@property
+	def uvi(self) -> int:
+		return self.data['uvi']
 
 	@property
-	def windDirection(self) -> Direction:
-		return self.data['windDirection']
+	def accumulation(self) -> Length:
+		return self.data['accumulation']
 
 	@property
-	def lull(self) -> Wind:
+	def lullSpeed(self) -> Wind:
 		return self.data['lullSpeed']
 
 	@property
-	def gust(self) -> Wind:
-		return self.data['gustSpeed']
+	def windSpeed(self) -> Wind:
+		return self.data['windSpeed']
 
 	@property
 	def wind(self) -> Wind:
 		return self.data['windSpeed']
 
 	@property
-	def precipRate(self) -> Length:
-		return self.data['accumulation']
+	def gustSpeed(self) -> Wind:
+		return self.data['gustSpeed']
+
+	@property
+	def windDirection(self) -> Direction:
+		return self.data['windDirection']
+
+	@property
+	def battery(self) -> Volts:
+		return self.data['battery']
+
+	@property
+	def reportInterval(self) -> Minute:
+		return self.data['reportInterval']
+
+	@property
+	def irradiance(self) -> RadiantFlux:
+		return self.data['irradiance']
+
+	@property
+	def illuminance(self) -> Lux:
+		return self.data['illuminance']
+
+	@property
+	def accumulationDay(self) -> Length:
+		return self.data['accumulationDay']
+
+	@property
+	def precipitationType(self) -> int:
+		return self.data['precipitationType']
+
+	@property
+	def windSampleInterval(self) -> Second:
+		return self.data['windSampleInterval']
 
 
-class WindMessage(WSObservation):
+class SkyMessage(Observation, _Sky):
+	atlas = [*Observation.atlas, 'illuminance', 'uvi', 'accumulation', 'lullSpeed', 'windSpeed',
+	         'gustSpeed', 'windDirection', 'battery', 'reportInterval', 'irradiance',
+	         'accumulationDay', 'precipitationType', 'windSampleInterval']
 
-	def __init__(self, messageData):
-		self.messAtlas['data'] = 'ob'
-		self.atlas = [*self.atlas, 'speed', 'direction']
-		super(WindMessage, self).__init__(messageData)
+	def __init__(self, udpData):
+		self.messAtlas['obs'] = 'data'
+		super(SkyMessage, self).__init__(udpData)
+
+		if len(udpData['data'][0] == 16):
+			self.atlas += ['dailyAccumulationRainCheck', 'localDailyAccumulationRainCheck', 'rainCheck']
+
+
+class TempestMessage(Observation, _Sky, _Air):
+	atlas = [*Observation.atlas, 'lullSpeed', 'windSpeed', 'gustSpeed', 'windDirection',
+	         'windSampleInterval', 'pressure', 'temperature', 'humidity',
+	         'illuminance', 'uvi', 'irradiance', 'accumulation',
+	         'precipitationType', 'strikeDistance', 'strikes',
+	         'battery', 'reportInterval']
+
+	summaryAtlas = {
+			'feels_like':                         'feelsLike',
+			'heat_index':                         'heatIndex',
+			'precip_accum_local_yesterday':       'dailyAccumulationYesterday',
+			'precip_accum_local_yesterday_final': 'dailyAccumulationYesterdayRainCheck',
+			'precip_analysis_type_yesterday':     'precipitationTypeYesterday',
+			'precip_total_1h':                    'accumulation1h',
+			'pressure_trend':                     'pressureTrend',
+			# 'pulse_adj_ob_temp':                  'pulse_adj_ob_temp',
+			# 'pulse_adj_ob_time':                  'pulse_adj_ob_time',
+			# 'pulse_adj_ob_wind_avg':              'pulse_adj_ob_wind_avg',
+			'raining_minutes':                    'rainingMinutes',
+			'strike_last_epoch':                  'strikeLastTime',
+			'strike_last_dist':                   'strikeLastDistance',
+			'strike_count_1h':                    'strikes1h',
+			'strike_count_3h':                    'strikes3h',
+			'wind_chill':                         'windChill'
+	}
+
+	def __init__(self, udpData):
+		self.messAtlas['obs'] = 'data'
+		super(TempestMessage, self).__init__(udpData)
+		print()
+		if len(self.data) == 21:
+			self.atlas += ['dailyAccumulationRaw', 'dailyAccumulationRainCheck',
+			               'localDailyAccumulationRainCheck', 'rainCheck']
+
+		if 'summary' in self:
+			summary = self.translate(self.pop('summary'), self.summaryAtlas)
+			print(summary)
+			summary = self.convert(summary, classAtlas)
+			self['summary'] = summary
+
+		if 'rainCheck' in self.data:
+			# Always assume rainCheck is on unless specified as false
+			self.data['rainCheck'] = False if self.data['rainCheck'] == 2 else True
+		else:
+			self.data['rainCheck'] = False
+
+	@property
+	def rainCheck(self) -> bool:
+		return self.data['rainCheck']
+
+	@property
+	def dailyAccumulation(self) -> Length:
+		return self.data['localDailyAccumulationRainCheck'] if self.rainCheck else self.data['dailyAccumulationRaw']
+
+
+class LightningMessage(Observation):
+
+	def __init__(self, udpData):
+		self.messAtlas['data'] = 'evt'
+		self.atlas = [*self.atlas, 'distance', 'energy']
+		super(LightningMessage, self).__init__(udpData)
 		delattr(self, 'atlas')
-
-	@property
-	def speed(self) -> Wind:
-		return self['data']['speed']
-
-	@property
-	def direction(self) -> Direction:
-		return self['data']['direction']
-
-	@property
-	def messsage(self):
-		return 'Wind recorded {}km/h at {} ({}º)'.format(self.speed, self.direction.cardinal, self.direction)
