@@ -17,9 +17,13 @@ classAtlas = {
 		"feelsLike":                           Heat,
 		"heatIndex":                           Heat,
 		"windChill":                           Heat,
+		"dewpoint":                            Heat,
+		"wetbulb":                             Heat,
+		"delta_t":                             Heat,
 		'humidity':                            Humidity,
 		'pressure':                            mmHg,
 		"pressureTrend":                       str,
+		"airDensity":                          float,
 
 		'illuminance':                         Lux,
 		'uvi':                                 int,
@@ -40,6 +44,8 @@ classAtlas = {
 
 		'precipitationType':                   PrecipitationType,
 		'rainingMinutes':                      list,
+		'rainingTotalMinutes':                 Minute,
+		'rainingTotalMinutesYesterday':        Minute,
 		'dailyAccumulationRaw':                Precipitation,
 		'dailyAccumulationRainCheck':          bool,
 		'localDailyAccumulationRainCheck':     bool,
@@ -50,7 +56,30 @@ classAtlas = {
 		'rainCheck':                           int,
 
 		"pulse_adj_ob_temp":                   Heat,
-		# "pulse_adj_ob_time":                   "pulse_adj_ob_time",
-		"pulse_adj_ob_wind_avg":               Wind
-		# "rainingMinutes":                      "raining_minutes",
+		"pulse_adj_ob_time":                   int,
+		"pulse_adj_ob_wind_avg":               Wind,
+}
+
+summaryAtlas = {
+		'feels_like':                         'feelsLike',
+		'heat_index':                         'heatIndex',
+		'dew_point':                          'dewpoint',
+		'wet_bulb_temperature':               'wetbulb',
+		'precip_accum_local_yesterday':       'dailyAccumulationYesterday',
+		'precip_accum_local_yesterday_final': 'dailyAccumulationYesterdayRainCheck',
+		'precip_analysis_type_yesterday':     'precipitationTypeYesterday',
+		'precip_total_1h':                    'accumulation1h',
+		'pressure_trend':                     'pressureTrend',
+		'air_density':                        'airDensity',
+		# 'pulse_adj_ob_temp':                  'pulse_adj_ob_temp',
+		# 'pulse_adj_ob_time':                  'pulse_adj_ob_time',
+		# 'pulse_adj_ob_wind_avg':              'pulse_adj_ob_wind_avg',
+		'raining_minutes':                    'rainingMinutes',
+		"precip_minutes_local_day":           'rainingTotalMinutes',
+		"precip_minutes_local_yesterday":     'rainingTotalMinutesYesterday',
+		'strike_last_epoch':                  'strikeLastTime',
+		'strike_last_dist':                   'strikeLastDistance',
+		'strike_count_1h':                    'strikes1h',
+		'strike_count_3h':                    'strikes3h',
+		'wind_chill':                         'windChill'
 }
