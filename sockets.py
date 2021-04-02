@@ -1,13 +1,17 @@
 from json import dumps, loads
+from pprint import pprint
+from time import sleep
+import logging
 
-from PySide6.QtCore import QObject, Signal
+import websocket
+from PySide6.QtCore import QObject, QThread, Signal
 
 from messages import *
-from pprint import pprint
 
 
 class _Messenger(QObject):
 	signal: Signal = Signal(Observation)
+	running: bool = False
 	messageTypes = {'rapid_wind': WindMessage, 'evt_precip': RainStartMessage, 'evt_strike': LightningMessage,
 	                'obs_st':     TempestMessage, 'obs_air': AirMessage, 'obs_sky': SkyMessage,
 	                'hub_status': HubStatusMessage, 'device_status': DeviceStatusMessage}
@@ -20,40 +24,60 @@ class _Messenger(QObject):
 
 	def push(self, message: dict):
 		if message['type'] in self.messageTypes:
+			logging.debug("MESSAGE RECEIVED")
+			pprint.pprint(message)
 			messageType = self.messageTypes[message['type']]
 			message = messageType(message)
+
+			# logging.debug(message.formatMessage)
 			self.signal.emit(message)
+		else:
+			logging.debug("INVALID MESSAGE TYPE", message['type'])
 
 
-class WSMessenger(_Messenger):
-	import asyncio
-	import websockets
-
-	token = 'f2f4cc66-7dec-4b09-bf64-f70c01da9690'
+class WSMessenger(QThread, _Messenger):
+	token = '61173523-5a94-4392-bc6b-2e1d375d17fe'
 	uri = 'wss://ws.weatherflow.com/swd/data?token=' + token
 
 	deviceID = 116322
 	id = "59cb18db"
 
-	def __init__(self, loop: asyncio.AbstractEventLoop, parent=None):
+	def __init__(self, parent=None):
 		super(WSMessenger, self).__init__(parent)
-		self.loop = loop
+		self.WS = websocket.WebSocketApp(self.uri,
+		                                 on_open=self.on_open,
+		                                 on_message=self.on_message,
+		                                 on_error=self.on_error,
+		                                 on_close=self.on_close)
 
 	def genMessage(self, messageType: str) -> dict[str:str]:
 		return {"type":      messageType,
 		        "device_id": self.deviceID,
 		        "id":        self.id}
 
-	async def listen(self):
-		async with self.websockets.connect(self.uri) as websocket:
-			await websocket.send(dumps(self.genMessage('listen_start')))
-			await websocket.send(dumps(self.genMessage('listen_rapid_start')))
-			while True:
-				message = loads(await websocket.recv())
-				self.push(message)
+	def run(self):
+		self.running = True
+		self.WS.run_forever()
 
-	def start(self):
-		self.asyncio.ensure_future(self.listen(), loop=self.loop)
+	def stop(self):
+		self.running = False
+		self.WS.close()
+
+	def on_open(self, ws):
+		ws.send(dumps(self.genMessage('listen_start')))
+		ws.send(dumps(self.genMessage('listen_rapid_start')))
+
+	def on_message(self, ws, message):
+		self.push(loads(message))
+
+	def on_error(self, ws, error):
+		print(error)
+
+	def on_close(self, ws):
+		print("### closed ###")
+
+	def terminate(self):
+		self.WS.close()
 
 
 class UDPMessenger(_Messenger):
@@ -67,7 +91,12 @@ class UDPMessenger(_Messenger):
 	def start(self):
 		self.udpSocket = self.QUdpSocket(self)
 		self.connectSocket()
+		self.running = True
 		self.listen()
+
+	def stop(self):
+		self.running = False
+		self.udpSocket.close()
 
 	def connectSocket(self):
 		self.udpSocket.bind(50222)
@@ -77,23 +106,19 @@ class UDPMessenger(_Messenger):
 		while self.udpSocket.hasPendingDatagrams():
 			datagram, host, port = self.udpSocket.readDatagram(self.udpSocket.pendingDatagramSize())
 			message = loads(str(datagram, encoding='ascii'))
+			pprint.pprint(message)
 			self.push(message)
 
 
 web = True
 
 if __name__ == '__main__' and web:
-	import asyncio
-	loop = asyncio.get_event_loop()
-	ws = WSMessenger(loop)
-	asyncio.get_event_loop().run_until_complete(ws.connectSocket())
-	asyncio.get_event_loop().run_forever()
-
+	ws = WSMessenger()
+	ws.run()
 elif __name__ == '__main__':
 	from select import select
 	from socket import AF_INET, INADDR_ANY, inet_aton, IP_ADD_MEMBERSHIP, IPPROTO_IP, IPPROTO_UDP, SO_REUSEADDR, SOCK_DGRAM, socket, SOL_SOCKET
 	from struct import pack
-	from time import sleep
 
 
 	# create broadcast listener socket
@@ -115,7 +140,7 @@ elif __name__ == '__main__':
 
 	try:
 		while True:
-			sleep(.1)
+			sleep(1)
 			readable, writable, exceptional = select(sock_list, [], sock_list, 0)
 			for s in readable:
 				data, addr = s.recvfrom(4096)

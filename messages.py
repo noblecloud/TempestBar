@@ -1,9 +1,10 @@
 import logging
+import pprint
 from datetime import datetime, timedelta
 
 import pytz
 
-from constants import classAtlas
+from constants import classAtlas, summaryAtlas
 from units.defaults.weatherFlow import Heat, Wind
 from units.length import Length
 from units.others import Direction, Humidity, Lux, RadiantFlux, Volts
@@ -17,7 +18,7 @@ class DataMessage(dict):
 		pass
 
 	@property
-	def data(self):
+	def data(self) -> dict:
 		return self['data']
 
 	@property
@@ -27,6 +28,10 @@ class DataMessage(dict):
 	@property
 	def reportInterval(self) -> Minute:
 		return self.data['reportInterval']
+
+	@property
+	def formatMessage(self) -> str:
+		return pprint.pformat(self)
 
 
 class Observation(DataMessage):
@@ -357,38 +362,17 @@ class TempestMessage(Observation, _Sky, _Air):
 	         'precipitationType', 'strikeDistance', 'strikes',
 	         'battery', 'reportInterval']
 
-	summaryAtlas = {
-			'feels_like':                         'feelsLike',
-			'heat_index':                         'heatIndex',
-			'precip_accum_local_yesterday':       'dailyAccumulationYesterday',
-			'precip_accum_local_yesterday_final': 'dailyAccumulationYesterdayRainCheck',
-			'precip_analysis_type_yesterday':     'precipitationTypeYesterday',
-			'precip_total_1h':                    'accumulation1h',
-			'pressure_trend':                     'pressureTrend',
-			# 'pulse_adj_ob_temp':                  'pulse_adj_ob_temp',
-			# 'pulse_adj_ob_time':                  'pulse_adj_ob_time',
-			# 'pulse_adj_ob_wind_avg':              'pulse_adj_ob_wind_avg',
-			'raining_minutes':                    'rainingMinutes',
-			'strike_last_epoch':                  'strikeLastTime',
-			'strike_last_dist':                   'strikeLastDistance',
-			'strike_count_1h':                    'strikes1h',
-			'strike_count_3h':                    'strikes3h',
-			'wind_chill':                         'windChill'
-	}
-
 	def __init__(self, udpData):
 		self.messAtlas['obs'] = 'data'
 		super(TempestMessage, self).__init__(udpData)
-		print()
 		if len(self.data) == 21:
 			self.atlas += ['dailyAccumulationRaw', 'dailyAccumulationRainCheck',
 			               'localDailyAccumulationRainCheck', 'rainCheck']
 
 		if 'summary' in self:
-			summary = self.translate(self.pop('summary'), self.summaryAtlas)
-			print(summary)
+			summary = self.translate(self['summary'], summaryAtlas)
 			summary = self.convert(summary, classAtlas)
-			self['summary'] = summary
+			self.data.update(summary)
 
 		if 'rainCheck' in self.data:
 			# Always assume rainCheck is on unless specified as false
@@ -403,6 +387,18 @@ class TempestMessage(Observation, _Sky, _Air):
 	@property
 	def dailyAccumulation(self) -> Length:
 		return self.data['localDailyAccumulationRainCheck'] if self.rainCheck else self.data['dailyAccumulationRaw']
+
+	@property
+	def dewpoint(self):
+		return self.data['dewpoint']
+
+	@property
+	def feelsLike(self):
+		return self.data['feelsLike']
+
+	@property
+	def airDensity(self):
+		return self.data['airDensity']
 
 
 class LightningMessage(Observation):
