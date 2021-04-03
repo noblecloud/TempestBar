@@ -1,5 +1,8 @@
+import math
+
 from units.defaults.weatherFlow import *
 from units.others import Direction, Humidity, Lux, RadiantFlux, Volts
+from units.pressure import Pressure
 from units.time import Minute, Second
 
 classAtlas = {
@@ -83,3 +86,12 @@ summaryAtlas = {
 		'strike_count_3h':                    'strikes3h',
 		'wind_chill':                         'windChill'
 }
+
+
+def dewpoint(temperature: Heat, rh: Humidity):
+	c = (243.04 * temperature / (17.625 + temperature)) + math.log(rh / 100.0)
+	return (17.625 * c) / (243.04 - c)
+
+
+def airDensity(temperature: Heat, pressure: Pressure):
+	return (pressure.mb*100)/(temperature.kel*287.058)
