@@ -1,6 +1,6 @@
 from PySide6 import QtCore
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QFrame
+from PySide6.QtWidgets import QFrame, QGridLayout
 
 from messages import Observation, TempestMessage, WindMessage
 from sockets import UDPMessenger, WSMessenger
@@ -29,11 +29,16 @@ class Tab(QFrame):
 		return super(Tab, self).eventFilter(obj, event)
 
 
-class UDPTab(Tab, Ui_udp):
+class UDPTab(Tab, Ui_websocket):
 
 	def __init__(self, *args, **kwargs):
 		self.messenger = UDPMessenger()
 		super(UDPTab, self).__init__(*args, **kwargs)
+		self.feelsLike.deleteLater()
+		self.feelsLikeLabel.deleteLater()
+		layout: QGridLayout = self.airGroup.layout()
+		layout.takeAt(4)
+		layout.takeAt(4)
 
 	@Slot(Observation)
 	def updateItems(self, event: Observation):
