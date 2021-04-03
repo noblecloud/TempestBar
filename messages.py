@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from constants import classAtlas, summaryAtlas
+from constants import classAtlas, summaryAtlas, dewpoint, airDensity
 from units.defaults.weatherFlow import Heat, Wind
 from units.length import Length
 from units.others import Direction, Humidity, Lux, RadiantFlux, Volts
@@ -390,7 +390,11 @@ class TempestMessage(Observation, _Sky, _Air):
 
 	@property
 	def dewpoint(self):
-		return self.data['dewpoint']
+		try:
+			dewpoint = self.data['dewpoint']
+		except KeyError:
+			dewpoint = Heat(dewpoint(self.temperature, self.humidity))
+		return dewpoint.localized
 
 	@property
 	def feelsLike(self):
@@ -398,7 +402,11 @@ class TempestMessage(Observation, _Sky, _Air):
 
 	@property
 	def airDensity(self):
-		return self.data['airDensity']
+		try:
+			value = self.data['airDensity']
+		except KeyError:
+			value = classAtlas['airDensity'](airDensity(self.temperature, self.pressure))
+		return value
 
 
 class LightningMessage(Observation):

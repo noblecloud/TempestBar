@@ -4,8 +4,7 @@ from PySide6.QtWidgets import QFrame, QGridLayout
 
 from messages import Observation, TempestMessage, WindMessage
 from sockets import UDPMessenger, WSMessenger
-from .udp_UI import Ui_udp
-from .websocket_UI import Ui_websocket
+from websocket_UI import Ui_websocket
 
 
 class Tab(QFrame):
@@ -56,8 +55,10 @@ class UDPTab(Tab, Ui_websocket):
 
 			# Air
 			self.temperature.setText(event.temperature.str)
-			self.humidity.setText(str(event.humidity))
+			self.humidity.setText(event.humidity.str)
 			self.pressure.setText(event.pressure.withUnit)
+			self.airDensity.setText(event.airDensity.withUnit)
+			self.dewpoint.setText(event.dewpoint.str)
 
 			# Solar
 			self.illuminance.setText(event.illuminance.withUnit)
@@ -146,10 +147,11 @@ class WSTab(Tab, Ui_websocket):
 
 			# Air
 			self.temperature.setText(event.temperature.str)
-			self.dewpoint.setText(event.dewpoint.str)
 			self.feelsLike.setText(event.feelsLike.str)
 			self.humidity.setText(str(event.humidity))
 			self.pressure.setText(event.pressure.withUnit)
+			self.dewpoint.setText(event.dewpoint.withUnit)
+			self.airDensity.setText(event.airDensity.withUnit)
 
 			# Solar
 			self.illuminance.setText(event.illuminance.withUnit)
