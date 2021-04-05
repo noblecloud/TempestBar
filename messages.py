@@ -4,18 +4,18 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from constants import classAtlas, summaryAtlas, dewpoint, airDensity
-from units.defaults.weatherFlow import Heat, Wind
-from units.length import Length
-from units.others import Direction, Humidity, Lux, RadiantFlux, Volts
-from units.pressure import Pressure
-from units.time import Minute, Second
+from constants import classAtlas, summaryAtlas, dewpointCalc, airDensityCalc
+from WeatherUnits.defaults.WeatherFlow import Heat, Wind
+from WeatherUnits.length import Length
+from WeatherUnits.others import Direction, Humidity, Lux, RadiantFlux, Volts
+from WeatherUnits.pressure import Pressure
+from WeatherUnits.time import Minute, Second
 
 
 class DataMessage(dict):
 
 	def __init__(self):
-		pass
+		super().__init__()
 
 	@property
 	def data(self) -> dict:
@@ -211,7 +211,8 @@ class RainStartMessage(Observation):
 		self.messAtlas['data'] = 'evt'
 		super().__init__(udpData)
 
-	def print(self):
+	@staticmethod
+	def print():
 		print('Rain event started')
 
 
@@ -391,10 +392,10 @@ class TempestMessage(Observation, _Sky, _Air):
 	@property
 	def dewpoint(self):
 		try:
-			dewpoint = self.data['dewpoint']
+			value = self.data['dewpoint']
 		except KeyError:
-			dewpoint = Heat(dewpoint(self.temperature, self.humidity))
-		return dewpoint.localized
+			value = Heat(dewpointCalc(self.temperature, self.humidity))
+		return value.localized
 
 	@property
 	def feelsLike(self):
@@ -405,7 +406,7 @@ class TempestMessage(Observation, _Sky, _Air):
 		try:
 			value = self.data['airDensity']
 		except KeyError:
-			value = classAtlas['airDensity'](airDensity(self.temperature, self.pressure))
+			value = classAtlas['airDensity'](airDensityCalc(self.temperature, self.pressure))
 		return value
 
 

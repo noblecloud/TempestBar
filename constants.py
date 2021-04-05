@@ -1,11 +1,12 @@
 import math
 
-from units.defaults.weatherFlow import *
-from units.defaults.weatherFlow.units import Density
-from units.heat import Celsius
-from units.others import Direction, Humidity, Lux, RadiantFlux, Volts
-from units.pressure import Pressure
-from units.time import Minute, Second
+from WeatherUnits.defaults.WeatherFlow import *
+from WeatherUnits.defaults.WeatherFlow.units import Density
+from WeatherUnits.heat import Celsius
+from WeatherUnits.length import Millimeter
+from WeatherUnits.others import Direction, Humidity, Lux, RadiantFlux, Volts
+from WeatherUnits.pressure import Pressure
+from WeatherUnits.time import Minute, Second
 
 classAtlas = {
 		'time':                                int,
@@ -90,10 +91,10 @@ summaryAtlas = {
 }
 
 
-def dewpoint(temperature: Heat, rh: Humidity) -> Celsius:
+def dewpointCalc(temperature: Heat, rh: Humidity) -> Celsius:
 	c = (243.04 * temperature.c / (17.625 + temperature.c)) + math.log(rh / 100.0)
 	return Celsius((17.625 * c) / (243.04 - c))
 
 
-def airDensity(temperature: Heat, pressure: Pressure):
+def airDensityCalc(temperature: Heat, pressure: Pressure):
 	return (pressure.mb*100)/(temperature.kel*287.058)
