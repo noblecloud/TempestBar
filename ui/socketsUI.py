@@ -1,10 +1,13 @@
+import logging
+import pprint
+
 from PySide6 import QtCore
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QFrame, QGridLayout
 
-from messages import Observation, TempestMessage, WindMessage
+from messages import DeviceStatusMessage, LightningMessage, Observation, TempestMessage, WindMessage, HubStatusMessage
 from sockets import UDPMessenger, WSMessenger
-from websocket_UI import Ui_websocket
+from ui.websocket_UI import Ui_websocket
 
 
 class Tab(QFrame):
@@ -66,8 +69,10 @@ class UDPTab(Tab, Ui_websocket):
 			self.uv.setText(str(event.uvi))
 
 			# Sky
-			if event.strikes + event.accumulation > 0:
+			if event.strikes + event.accumulation:
 				self.skyGroup.setDisabled(False)
+				self.precipitation.setDisabled(False)
+				self.lightning.setDisabled(False)
 				if event.strikes:
 					self.strikes.show()
 					self.strikesLabel.show()
@@ -81,7 +86,7 @@ class UDPTab(Tab, Ui_websocket):
 					self.strikeDistance.hide()
 					self.strikeDistanceLabel.hide()
 
-				if event.precipRate > 0:
+				if event.accumulation > 0:
 					self.precipRate.show()
 					self.precipRateLabel.show()
 					self.precipRate.setText(event.accumulation.withUnit)
@@ -92,6 +97,14 @@ class UDPTab(Tab, Ui_websocket):
 				self.accumulation.hide()
 			else:
 				self.skyGroup.setDisabled(True)
+				self.precipitation.setDisabled(True)
+				self.lightning.setDisabled(True)
+
+
+		if isinstance(event, LightningMessage):
+			logging.debug("Strike!")
+
+
 
 		# Status
 		# self.deviceBattery.setText(event.battery.withUnit)
@@ -136,6 +149,11 @@ class WSTab(Tab, Ui_websocket):
 			if event.speed != 0:
 				self.windDirection.setText('{} ({}º)'.format(event.direction.cardinal, event.direction.withUnit.strip(' ')))
 
+		if isinstance(event, LightningMessage):
+			event: LightningMessage
+			logging.debug("Strike!")
+			pprint.pprint(event.time)
+			self.lastStrike.setText(event.time)
 
 		if isinstance(event, TempestMessage):
 
@@ -148,9 +166,9 @@ class WSTab(Tab, Ui_websocket):
 			# Air
 			self.temperature.setText(event.temperature.str)
 			self.feelsLike.setText(event.feelsLike.str)
+			self.dewpoint.setText(event.dewpoint.str)
 			self.humidity.setText(str(event.humidity))
 			self.pressure.setText(event.pressure.withUnit)
-			self.dewpoint.setText(event.dewpoint.withUnit)
 			self.airDensity.setText(event.airDensity.withUnit)
 
 			# Solar
@@ -162,27 +180,17 @@ class WSTab(Tab, Ui_websocket):
 			if event.strikes + event.accumulation > 0:
 				self.skyGroup.setDisabled(False)
 				if event.strikes:
-					self.strikes.show()
-					self.strikesLabel.show()
-					self.strikeDistance.show()
-					self.strikeDistanceLabel.show()
-					self.strikes.setText(str(event.strikes))
+					self.lightning.show()
+					self.strikeTotal.setText(str(event.strikes))
 					self.strikeDistance.setText(event.strikeDistance.withUnit)
 				else:
-					self.strikes.hide()
-					self.strikesLabel.hide()
-					self.strikeDistance.hide()
-					self.strikeDistanceLabel.hide()
+					self.lightning.hide()
 
-				if event.precipRate > 0:
-					self.precipRate.show()
-					self.precipRateLabel.show()
-					self.precipRate.setText(event.accumulation.withUnit)
+				if event.accumulation > 0:
+					self.precipitation.show()
+					self.rate.setText(event.precipRate.withUnit)
 				else:
-					self.precipRate.hide()
-					self.precipRateLabel.hide()
-				self.accumulationLabel.hide()
-				self.accumulation.hide()
+					self.precipitation.hide()
 			else:
 				self.skyGroup.setDisabled(True)
 

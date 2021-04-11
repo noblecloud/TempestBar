@@ -5,11 +5,12 @@ from datetime import datetime, timedelta
 import pytz
 
 from constants import classAtlas, summaryAtlas, dewpointCalc, airDensityCalc
-from WeatherUnits.defaults.WeatherFlow import Heat, Wind
+from WeatherUnits.defaults.WeatherFlow import Wind
 from WeatherUnits.length import Length
 from WeatherUnits.others import Direction, Humidity, Lux, RadiantFlux, Volts
 from WeatherUnits.pressure import Pressure
 from WeatherUnits.time import Minute, Second
+from WeatherUnits.temperature import Heat as Temperature
 
 
 class DataMessage(dict):
@@ -23,11 +24,7 @@ class DataMessage(dict):
 
 	@property
 	def time(self) -> datetime:
-		return self.data['time']
-
-	@property
-	def reportInterval(self) -> Minute:
-		return self.data['reportInterval']
+		return self['time']
 
 	@property
 	def formatMessage(self) -> str:
@@ -260,7 +257,7 @@ class _Air(DataMessage):
 		return self.data['pressure']
 
 	@property
-	def temperature(self) -> Heat:
+	def temperature(self) -> Temperature:
 		return self.data['temperature']
 
 	@property
@@ -386,6 +383,11 @@ class TempestMessage(Observation, _Sky, _Air):
 		return self.data['rainCheck']
 
 	@property
+	def precipRate(self):
+		from WeatherUnits.derived import Precipitation
+		return Precipitation(self.accumulation.inch, self.reportInterval.hour)
+
+	@property
 	def dailyAccumulation(self) -> Length:
 		return self.data['localDailyAccumulationRainCheck'] if self.rainCheck else self.data['dailyAccumulationRaw']
 
@@ -394,7 +396,7 @@ class TempestMessage(Observation, _Sky, _Air):
 		try:
 			value = self.data['dewpoint']
 		except KeyError:
-			value = Heat(dewpointCalc(self.temperature, self.humidity))
+			value = Temperature(dewpointCalc(self.temperature, self.humidity))
 		return value.localized
 
 	@property
@@ -413,7 +415,7 @@ class TempestMessage(Observation, _Sky, _Air):
 class LightningMessage(Observation):
 
 	def __init__(self, udpData):
-		self.messAtlas['data'] = 'evt'
+		self.messAtlas['evt'] = 'data'
 		self.atlas = [*self.atlas, 'distance', 'energy']
 		super(LightningMessage, self).__init__(udpData)
 		delattr(self, 'atlas')

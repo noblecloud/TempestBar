@@ -28,8 +28,6 @@ class _Messenger(QObject):
 			pprint.pprint(message)
 			messageType = self.messageTypes[message['type']]
 			message = messageType(message)
-
-			# logging.debug(message.formatMessage)
 			self.signal.emit(message)
 		else:
 			logging.debug("INVALID MESSAGE TYPE", message['type'])
@@ -101,12 +99,12 @@ class UDPMessenger(_Messenger):
 	def connectSocket(self):
 		self.udpSocket.bind(50222)
 		self.udpSocket.readyRead.connect(self.listen)
+		logging.info("UDP Connected to port: 50222")
 
 	def listen(self):
 		while self.udpSocket.hasPendingDatagrams():
 			datagram, host, port = self.udpSocket.readDatagram(self.udpSocket.pendingDatagramSize())
 			message = loads(str(datagram, encoding='ascii'))
-			pprint.pprint(message)
 			self.push(message)
 
 
