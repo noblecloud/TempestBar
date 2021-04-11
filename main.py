@@ -2,6 +2,9 @@ import sys
 from PySide6 import QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication, QMainWindow
+import WeatherUnits
+
+WeatherUnits.config.read('config-example-us.ini')
 
 from ui.main_UI import Ui_MainWindow
 
