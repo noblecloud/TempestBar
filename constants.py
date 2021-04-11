@@ -1,11 +1,11 @@
 import math
 
-from WeatherUnits.defaults.WeatherFlow import *
-from WeatherUnits.defaults.WeatherFlow.units import Density
-from WeatherUnits.heat import Celsius
-from WeatherUnits.length import Millimeter
+from WeatherUnits.defaults.WeatherFlow import Wind
+from WeatherUnits.defaults.WeatherFlow.units import Density, PrecipitationType, Temperature, Precipitation
+from WeatherUnits.length import Kilometer, Millimeter
 from WeatherUnits.others import Direction, Humidity, Lux, RadiantFlux, Volts
-from WeatherUnits.pressure import Pressure
+from WeatherUnits.pressure import mmHg, Pressure
+from WeatherUnits.temperature import Celsius
 from WeatherUnits.time import Minute, Second
 
 classAtlas = {
@@ -19,13 +19,13 @@ classAtlas = {
 		'windDirection':                       Direction,
 		'windSampleInterval':                  Second,
 
-		'temperature':                         Heat,
-		"feelsLike":                           Heat,
-		"heatIndex":                           Heat,
-		"windChill":                           Heat,
-		"dewpoint":                            Heat,
-		"wetbulb":                             Heat,
-		"delta_t":                             Heat,
+		'temperature':                         Celsius,
+		"feelsLike":                           Celsius,
+		"heatIndex":                           Celsius,
+		"windChill":                           Celsius,
+		"dewpoint":                            Celsius,
+		"wetbulb":                             Celsius,
+		"delta_t":                             Celsius,
 		'humidity':                            Humidity,
 		'pressure':                            mmHg,
 		"pressureTrend":                       str,
@@ -34,7 +34,7 @@ classAtlas = {
 		'illuminance':                         Lux,
 		'uvi':                                 int,
 		'irradiance':                          RadiantFlux,
-		'accumulation':                        Precipitation,
+		'accumulation':                        Millimeter,
 
 		'distance':                            Kilometer,
 		'strikeDistance':                      Kilometer,
@@ -48,20 +48,20 @@ classAtlas = {
 		'battery':                             Volts,
 		'reportInterval':                      Minute,
 
-		'precipitationType':                   PrecipitationType,
+		'precipitationType':                   int,
 		'rainingMinutes':                      list,
 		'rainingTotalMinutes':                 Minute,
 		'rainingTotalMinutesYesterday':        Minute,
-		'dailyAccumulationRaw':                Precipitation,
+		'dailyAccumulationRaw':                Millimeter,
 		'dailyAccumulationRainCheck':          bool,
 		'localDailyAccumulationRainCheck':     bool,
 		"dailyAccumulationYesterday":          Millimeter,
 		"dailyAccumulationYesterdayRainCheck": Millimeter,
-		"precipitationTypeYesterday":          PrecipitationType,
+		"precipitationTypeYesterday":          int,
 		"accumulation1h":                      Precipitation,
 		'rainCheck':                           int,
 
-		"pulse_adj_ob_temp":                   Heat,
+		"pulse_adj_ob_temp":                   Celsius,
 		"pulse_adj_ob_time":                   int,
 		"pulse_adj_ob_wind_avg":               Wind,
 }
@@ -91,10 +91,10 @@ summaryAtlas = {
 }
 
 
-def dewpointCalc(temperature: Heat, rh: Humidity) -> Celsius:
+def dewpointCalc(temperature: Celsius, rh: Humidity) -> Celsius:
 	c = (243.04 * temperature.c / (17.625 + temperature.c)) + math.log(rh / 100.0)
 	return Celsius((17.625 * c) / (243.04 - c))
 
 
-def airDensityCalc(temperature: Heat, pressure: Pressure):
+def airDensityCalc(temperature: Celsius, pressure: Pressure):
 	return (pressure.mb*100)/(temperature.kel*287.058)
