@@ -23,7 +23,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.setupUi(self)
 
 		self.stationSelection.addItem(str(list(self.devices.keys())[0]))
-		self.stationSelection.addItem(str(116321))
 		self.connectionToggle.clicked.connect(self.toggle)
 
 	def getDevices(self):
