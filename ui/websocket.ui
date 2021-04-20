@@ -6,21 +6,45 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1312</width>
-    <height>431</height>
+    <width>950</width>
+    <height>377</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1312</width>
-    <height>431</height>
+    <width>630</width>
+    <height>368</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,0">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
     <widget class="QGroupBox" name="airGroup">
      <property name="minimumSize">
       <size>
@@ -41,7 +65,13 @@
       </font>
      </property>
      <property name="title">
-      <string>Air</string>
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
       <property name="fieldGrowthPolicy">
@@ -49,6 +79,12 @@
       </property>
       <property name="labelAlignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="topMargin">
+       <number>7</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
       </property>
       <item row="0" column="0">
        <widget class="QLabel" name="temperatureLabel">
@@ -64,7 +100,10 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLabel" name="temperature">
+       <widget class="EasyLabel" name="temperature">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>24</pointsize>
@@ -72,10 +111,13 @@
          </font>
         </property>
         <property name="text">
-         <string>0</string>
+         <string>70º</string>
         </property>
         <property name="measurement" stdset="0">
-         <string>temperature</string>
+         <string/>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -93,7 +135,10 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLabel" name="humidity">
+       <widget class="EasyLabel" name="humidity">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>24</pointsize>
@@ -101,10 +146,13 @@
          </font>
         </property>
         <property name="text">
-         <string>0</string>
+         <string>75%</string>
         </property>
         <property name="measurement" stdset="0">
          <string>humidity</string>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -122,7 +170,10 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLabel" name="feelsLike">
+       <widget class="EasyLabel" name="feelsLike">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>24</pointsize>
@@ -130,10 +181,13 @@
          </font>
         </property>
         <property name="text">
-         <string>0</string>
+         <string>70º</string>
         </property>
         <property name="measurement" stdset="0">
          <string>temperature</string>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -151,7 +205,10 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLabel" name="dewpoint">
+       <widget class="EasyLabel" name="dewpoint">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>24</pointsize>
@@ -159,10 +216,13 @@
          </font>
         </property>
         <property name="text">
-         <string>0</string>
+         <string>59.2º</string>
         </property>
         <property name="measurement" stdset="0">
          <string>temperature</string>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -180,7 +240,10 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLabel" name="airDensity">
+       <widget class="EasyLabel" name="airDensity">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>24</pointsize>
@@ -188,10 +251,13 @@
          </font>
         </property>
         <property name="text">
-         <string>0</string>
+         <string>1.18 oz/ft³</string>
         </property>
         <property name="measurement" stdset="0">
          <string>pressure</string>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -209,7 +275,10 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QLabel" name="pressure">
+       <widget class="EasyLabel" name="pressure">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>24</pointsize>
@@ -217,14 +286,119 @@
          </font>
         </property>
         <property name="text">
-         <string>0</string>
+         <string>29.7 inHg</string>
         </property>
-        <property name="measurement" stdset="0">
-         <string>pressure</string>
+        <property name="showUnit" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="6" column="0">
+       <widget class="QLabel" name="illuminanceLabel">
+        <property name="font">
+         <font>
+          <pointsize>24</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Illuminance:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="EasyLabel" name="illuminance">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>24</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>91.2k lux</string>
+        </property>
+        <property name="measurement" stdset="0">
+         <string/>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="irradianceLabel">
+        <property name="font">
+         <font>
+          <pointsize>24</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Radiation:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="EasyLabel" name="irradiance">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>24</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>858 W/m²</string>
+        </property>
+        <property name="measurement" stdset="0">
+         <string/>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="uvLabel">
+        <property name="font">
+         <font>
+          <pointsize>24</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>UV:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="EasyLabel" name="uv">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>24</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>5</string>
+        </property>
+        <property name="measurement" stdset="0">
+         <string/>
+        </property>
+        <property name="showUnit" stdset="0">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
        <spacer name="airSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -240,7 +414,7 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item>
     <widget class="QGroupBox" name="windGroup">
      <property name="minimumSize">
       <size>
@@ -260,9 +434,18 @@
       </font>
      </property>
      <property name="title">
-      <string>Wind</string>
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item row="0" column="0">
        <widget class="QGroupBox" name="windNow">
         <property name="sizePolicy">
@@ -319,7 +502,10 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="wind">
+          <widget class="EasyLabel" name="wind">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -327,10 +513,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>0 mph</string>
            </property>
            <property name="measurement" stdset="0">
             <string>wind</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -348,7 +537,10 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLabel" name="windDirection">
+          <widget class="EasyLabel" name="windDirection">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -356,10 +548,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>NE (39º)</string>
            </property>
            <property name="measurement" stdset="0">
             <string>windDirection</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -368,6 +563,12 @@
       </item>
       <item row="1" column="0">
        <widget class="QGroupBox" name="windAverages">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <pointsize>26</pointsize>
@@ -375,7 +576,7 @@
          </font>
         </property>
         <property name="title">
-         <string>Averages</string>
+         <string>Average</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -388,6 +589,9 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
          <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item row="0" column="0">
@@ -404,7 +608,10 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="lull">
+          <widget class="EasyLabel" name="lull">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -412,10 +619,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>0 mph</string>
            </property>
            <property name="measurement" stdset="0">
             <string>lullSpeed</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -433,7 +643,10 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLabel" name="gust">
+          <widget class="EasyLabel" name="gust">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -441,10 +654,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>1.5 mph</string>
            </property>
            <property name="measurement" stdset="0">
             <string>gustSpeed</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -462,7 +678,10 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLabel" name="windAverage">
+          <widget class="EasyLabel" name="windAverage">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -470,10 +689,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>0.9 mph</string>
            </property>
            <property name="measurement" stdset="0">
             <string>windAverage</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -491,7 +713,10 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLabel" name="windDirectionAverage">
+          <widget class="EasyLabel" name="windDirectionAverage">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -499,10 +724,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>NNE (22º)</string>
            </property>
            <property name="measurement" stdset="0">
             <string>windDirection</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -525,143 +753,17 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QGroupBox" name="solarGroup">
-     <property name="minimumSize">
-      <size>
-       <width>320</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>320</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>34</pointsize>
-      </font>
-     </property>
-     <property name="title">
-      <string>Solar</string>
-     </property>
-     <layout class="QGridLayout" name="solarGridLayout">
-      <item row="2" column="1">
-       <widget class="QLabel" name="uv">
-        <property name="font">
-         <font>
-          <pointsize>24</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="measurement" stdset="0">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="irradianceLabel">
-        <property name="font">
-         <font>
-          <pointsize>24</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Solar Radiation:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="irradiance">
-        <property name="font">
-         <font>
-          <pointsize>24</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="measurement" stdset="0">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="illuminance">
-        <property name="font">
-         <font>
-          <pointsize>24</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="measurement" stdset="0">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="illuminanceLabel">
-        <property name="font">
-         <font>
-          <pointsize>24</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Illuminance:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="uvLabel">
-        <property name="font">
-         <font>
-          <pointsize>24</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>UV:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <spacer name="solarSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="3">
+   <item>
     <widget class="QGroupBox" name="skyGroup">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="minimumSize">
       <size>
-       <width>300</width>
+       <width>320</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>300</width>
+       <width>320</width>
        <height>16777215</height>
       </size>
      </property>
@@ -671,9 +773,21 @@
       </font>
      </property>
      <property name="title">
-      <string>Sky</string>
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>-1</number>
+      </property>
       <item row="0" column="0">
        <widget class="QGroupBox" name="precipitation">
         <property name="sizePolicy">
@@ -724,7 +838,10 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="rate">
+          <widget class="EasyLabel" name="rate">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -732,15 +849,21 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>0 in/hr</string>
            </property>
            <property name="measurement" stdset="0">
             <string>wind</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLabel" name="rateDescription">
+          <widget class="EasyLabel" name="rateDescription">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -748,10 +871,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>None</string>
            </property>
            <property name="measurement" stdset="0">
             <string>wind</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -764,12 +890,15 @@
             </font>
            </property>
            <property name="text">
-            <string>Accum:</string>
+            <string>Total:</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLabel" name="accumulation">
+          <widget class="EasyLabel" name="accumulation">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -777,10 +906,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>0 in</string>
            </property>
            <property name="measurement" stdset="0">
             <string>windDirection</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -790,7 +922,7 @@
       <item row="1" column="0">
        <widget class="QGroupBox" name="lightning">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -811,6 +943,9 @@
          <bool>false</bool>
         </property>
         <layout class="QFormLayout" name="formLayout_4">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetNoConstraint</enum>
+         </property>
          <property name="fieldGrowthPolicy">
           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
          </property>
@@ -821,6 +956,9 @@
           <number>0</number>
          </property>
          <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item row="0" column="0">
@@ -837,7 +975,10 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="lastStrike">
+          <widget class="EasyLabel" name="lastStrike">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -845,10 +986,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>∞</string>
            </property>
            <property name="measurement" stdset="0">
             <string>wind</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -866,7 +1010,10 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLabel" name="strikeDistance">
+          <widget class="EasyLabel" name="strikeDistance">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -874,10 +1021,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>∞</string>
            </property>
            <property name="measurement" stdset="0">
             <string>windDirection</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -895,7 +1045,10 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLabel" name="strikeEnergy">
+          <widget class="EasyLabel" name="strikeEnergy">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -903,10 +1056,13 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>0</string>
            </property>
            <property name="measurement" stdset="0">
             <string>windDirection</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -924,7 +1080,10 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLabel" name="strikeTotal">
+          <widget class="EasyLabel" name="strikeTotal">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <pointsize>24</pointsize>
@@ -932,21 +1091,44 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>0</string>
            </property>
            <property name="measurement" stdset="0">
             <string>windDirection</string>
+           </property>
+           <property name="showUnit" stdset="0">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
       </item>
+      <item row="2" column="0">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>EasyLabel</class>
+   <extends>QLabel</extends>
+   <header>ui/easyLabel</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

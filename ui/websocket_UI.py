@@ -12,15 +12,25 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
+from ui.easyLabel import EasyLabel
+
 
 class Ui_websocket(object):
     def setupUi(self, websocket):
         if not websocket.objectName():
             websocket.setObjectName(u"websocket")
-        websocket.resize(1312, 431)
-        websocket.setMinimumSize(QSize(1312, 431))
-        self.gridLayout = QGridLayout(websocket)
-        self.gridLayout.setObjectName(u"gridLayout")
+        websocket.resize(950, 377)
+        sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(websocket.sizePolicy().hasHeightForWidth())
+        websocket.setSizePolicy(sizePolicy)
+        websocket.setMinimumSize(QSize(630, 368))
+        self.horizontalLayout = QHBoxLayout(websocket)
+        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setSizeConstraint(QLayout.SetMinimumSize)
+        self.horizontalLayout.setContentsMargins(5, 0, 5, 0)
         self.airGroup = QGroupBox(websocket)
         self.airGroup.setObjectName(u"airGroup")
         self.airGroup.setMinimumSize(QSize(300, 0))
@@ -29,10 +39,13 @@ class Ui_websocket(object):
         font.setPointSize(34)
         font.setBold(False)
         self.airGroup.setFont(font)
+        self.airGroup.setFlat(True)
+        self.airGroup.setCheckable(False)
         self.formLayout_3 = QFormLayout(self.airGroup)
         self.formLayout_3.setObjectName(u"formLayout_3")
         self.formLayout_3.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout_3.setLabelAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.formLayout_3.setContentsMargins(-1, 7, -1, 0)
         self.temperatureLabel = QLabel(self.airGroup)
         self.temperatureLabel.setObjectName(u"temperatureLabel")
         font1 = QFont()
@@ -42,9 +55,11 @@ class Ui_websocket(object):
 
         self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.temperatureLabel)
 
-        self.temperature = QLabel(self.airGroup)
+        self.temperature = EasyLabel(self.airGroup)
         self.temperature.setObjectName(u"temperature")
+        self.temperature.setEnabled(False)
         self.temperature.setFont(font1)
+        self.temperature.setProperty("showUnit", False)
 
         self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.temperature)
 
@@ -54,9 +69,11 @@ class Ui_websocket(object):
 
         self.formLayout_3.setWidget(1, QFormLayout.LabelRole, self.humidityLabel)
 
-        self.humidity = QLabel(self.airGroup)
+        self.humidity = EasyLabel(self.airGroup)
         self.humidity.setObjectName(u"humidity")
+        self.humidity.setEnabled(False)
         self.humidity.setFont(font1)
+        self.humidity.setProperty("showUnit", False)
 
         self.formLayout_3.setWidget(1, QFormLayout.FieldRole, self.humidity)
 
@@ -66,9 +83,11 @@ class Ui_websocket(object):
 
         self.formLayout_3.setWidget(2, QFormLayout.LabelRole, self.feelsLikeLabel)
 
-        self.feelsLike = QLabel(self.airGroup)
+        self.feelsLike = EasyLabel(self.airGroup)
         self.feelsLike.setObjectName(u"feelsLike")
+        self.feelsLike.setEnabled(False)
         self.feelsLike.setFont(font1)
+        self.feelsLike.setProperty("showUnit", False)
 
         self.formLayout_3.setWidget(2, QFormLayout.FieldRole, self.feelsLike)
 
@@ -78,9 +97,11 @@ class Ui_websocket(object):
 
         self.formLayout_3.setWidget(3, QFormLayout.LabelRole, self.dewpointLabel)
 
-        self.dewpoint = QLabel(self.airGroup)
+        self.dewpoint = EasyLabel(self.airGroup)
         self.dewpoint.setObjectName(u"dewpoint")
+        self.dewpoint.setEnabled(False)
         self.dewpoint.setFont(font1)
+        self.dewpoint.setProperty("showUnit", False)
 
         self.formLayout_3.setWidget(3, QFormLayout.FieldRole, self.dewpoint)
 
@@ -90,9 +111,11 @@ class Ui_websocket(object):
 
         self.formLayout_3.setWidget(4, QFormLayout.LabelRole, self.airDensityLabel)
 
-        self.airDensity = QLabel(self.airGroup)
+        self.airDensity = EasyLabel(self.airGroup)
         self.airDensity.setObjectName(u"airDensity")
+        self.airDensity.setEnabled(False)
         self.airDensity.setFont(font1)
+        self.airDensity.setProperty("showUnit", True)
 
         self.formLayout_3.setWidget(4, QFormLayout.FieldRole, self.airDensity)
 
@@ -102,18 +125,62 @@ class Ui_websocket(object):
 
         self.formLayout_3.setWidget(5, QFormLayout.LabelRole, self.pressureLabel)
 
-        self.pressure = QLabel(self.airGroup)
+        self.pressure = EasyLabel(self.airGroup)
         self.pressure.setObjectName(u"pressure")
+        self.pressure.setEnabled(False)
         self.pressure.setFont(font1)
+        self.pressure.setProperty("showUnit", True)
 
         self.formLayout_3.setWidget(5, QFormLayout.FieldRole, self.pressure)
 
+        self.illuminanceLabel = QLabel(self.airGroup)
+        self.illuminanceLabel.setObjectName(u"illuminanceLabel")
+        self.illuminanceLabel.setFont(font1)
+
+        self.formLayout_3.setWidget(6, QFormLayout.LabelRole, self.illuminanceLabel)
+
+        self.illuminance = EasyLabel(self.airGroup)
+        self.illuminance.setObjectName(u"illuminance")
+        self.illuminance.setEnabled(False)
+        self.illuminance.setFont(font1)
+        self.illuminance.setProperty("showUnit", True)
+
+        self.formLayout_3.setWidget(6, QFormLayout.FieldRole, self.illuminance)
+
+        self.irradianceLabel = QLabel(self.airGroup)
+        self.irradianceLabel.setObjectName(u"irradianceLabel")
+        self.irradianceLabel.setFont(font1)
+
+        self.formLayout_3.setWidget(7, QFormLayout.LabelRole, self.irradianceLabel)
+
+        self.irradiance = EasyLabel(self.airGroup)
+        self.irradiance.setObjectName(u"irradiance")
+        self.irradiance.setEnabled(False)
+        self.irradiance.setFont(font1)
+        self.irradiance.setProperty("showUnit", True)
+
+        self.formLayout_3.setWidget(7, QFormLayout.FieldRole, self.irradiance)
+
+        self.uvLabel = QLabel(self.airGroup)
+        self.uvLabel.setObjectName(u"uvLabel")
+        self.uvLabel.setFont(font1)
+
+        self.formLayout_3.setWidget(8, QFormLayout.LabelRole, self.uvLabel)
+
+        self.uv = EasyLabel(self.airGroup)
+        self.uv.setObjectName(u"uv")
+        self.uv.setEnabled(False)
+        self.uv.setFont(font1)
+        self.uv.setProperty("showUnit", False)
+
+        self.formLayout_3.setWidget(8, QFormLayout.FieldRole, self.uv)
+
         self.airSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.formLayout_3.setItem(6, QFormLayout.LabelRole, self.airSpacer)
+        self.formLayout_3.setItem(9, QFormLayout.LabelRole, self.airSpacer)
 
 
-        self.gridLayout.addWidget(self.airGroup, 0, 0, 1, 1)
+        self.horizontalLayout.addWidget(self.airGroup)
 
         self.windGroup = QGroupBox(websocket)
         self.windGroup.setObjectName(u"windGroup")
@@ -122,15 +189,17 @@ class Ui_websocket(object):
         font2 = QFont()
         font2.setPointSize(34)
         self.windGroup.setFont(font2)
+        self.windGroup.setFlat(True)
         self.gridLayout_3 = QGridLayout(self.windGroup)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(-1, 0, -1, 0)
         self.windNow = QGroupBox(self.windGroup)
         self.windNow.setObjectName(u"windNow")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.windNow.sizePolicy().hasHeightForWidth())
-        self.windNow.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.windNow.sizePolicy().hasHeightForWidth())
+        self.windNow.setSizePolicy(sizePolicy1)
         font3 = QFont()
         font3.setPointSize(26)
         font3.setBold(True)
@@ -150,9 +219,11 @@ class Ui_websocket(object):
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.windLabel)
 
-        self.wind = QLabel(self.windNow)
+        self.wind = EasyLabel(self.windNow)
         self.wind.setObjectName(u"wind")
+        self.wind.setEnabled(False)
         self.wind.setFont(font1)
+        self.wind.setProperty("showUnit", True)
 
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.wind)
 
@@ -162,9 +233,11 @@ class Ui_websocket(object):
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.windDirectionLabel)
 
-        self.windDirection = QLabel(self.windNow)
+        self.windDirection = EasyLabel(self.windNow)
         self.windDirection.setObjectName(u"windDirection")
+        self.windDirection.setEnabled(False)
         self.windDirection.setFont(font1)
+        self.windDirection.setProperty("showUnit", False)
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.windDirection)
 
@@ -173,22 +246,29 @@ class Ui_websocket(object):
 
         self.windAverages = QGroupBox(self.windGroup)
         self.windAverages.setObjectName(u"windAverages")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.windAverages.sizePolicy().hasHeightForWidth())
+        self.windAverages.setSizePolicy(sizePolicy2)
         self.windAverages.setFont(font3)
         self.windAverages.setFlat(True)
         self.formLayout_2 = QFormLayout(self.windAverages)
         self.formLayout_2.setObjectName(u"formLayout_2")
         self.formLayout_2.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout_2.setLabelAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-        self.formLayout_2.setContentsMargins(0, -1, -1, -1)
+        self.formLayout_2.setContentsMargins(0, -1, -1, 0)
         self.lullLabel = QLabel(self.windAverages)
         self.lullLabel.setObjectName(u"lullLabel")
         self.lullLabel.setFont(font1)
 
         self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.lullLabel)
 
-        self.lull = QLabel(self.windAverages)
+        self.lull = EasyLabel(self.windAverages)
         self.lull.setObjectName(u"lull")
+        self.lull.setEnabled(False)
         self.lull.setFont(font1)
+        self.lull.setProperty("showUnit", True)
 
         self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.lull)
 
@@ -198,9 +278,11 @@ class Ui_websocket(object):
 
         self.formLayout_2.setWidget(1, QFormLayout.LabelRole, self.gustLabel)
 
-        self.gust = QLabel(self.windAverages)
+        self.gust = EasyLabel(self.windAverages)
         self.gust.setObjectName(u"gust")
+        self.gust.setEnabled(False)
         self.gust.setFont(font1)
+        self.gust.setProperty("showUnit", True)
 
         self.formLayout_2.setWidget(1, QFormLayout.FieldRole, self.gust)
 
@@ -210,9 +292,11 @@ class Ui_websocket(object):
 
         self.formLayout_2.setWidget(2, QFormLayout.LabelRole, self.windAverageLabel)
 
-        self.windAverage = QLabel(self.windAverages)
+        self.windAverage = EasyLabel(self.windAverages)
         self.windAverage.setObjectName(u"windAverage")
+        self.windAverage.setEnabled(False)
         self.windAverage.setFont(font1)
+        self.windAverage.setProperty("showUnit", True)
 
         self.formLayout_2.setWidget(2, QFormLayout.FieldRole, self.windAverage)
 
@@ -222,9 +306,11 @@ class Ui_websocket(object):
 
         self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.windDirectionAverageLabel)
 
-        self.windDirectionAverage = QLabel(self.windAverages)
+        self.windDirectionAverage = EasyLabel(self.windAverages)
         self.windDirectionAverage.setObjectName(u"windDirectionAverage")
+        self.windDirectionAverage.setEnabled(False)
         self.windDirectionAverage.setFont(font1)
+        self.windDirectionAverage.setProperty("showUnit", False)
 
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.windDirectionAverage)
 
@@ -236,76 +322,22 @@ class Ui_websocket(object):
         self.gridLayout_3.addItem(self.windSpacer, 2, 0, 1, 1)
 
 
-        self.gridLayout.addWidget(self.windGroup, 0, 1, 1, 1)
-
-        self.solarGroup = QGroupBox(websocket)
-        self.solarGroup.setObjectName(u"solarGroup")
-        self.solarGroup.setMinimumSize(QSize(320, 0))
-        self.solarGroup.setMaximumSize(QSize(320, 16777215))
-        self.solarGroup.setFont(font2)
-        self.solarGridLayout = QGridLayout(self.solarGroup)
-        self.solarGridLayout.setObjectName(u"solarGridLayout")
-        self.uv = QLabel(self.solarGroup)
-        self.uv.setObjectName(u"uv")
-        font4 = QFont()
-        font4.setPointSize(24)
-        self.uv.setFont(font4)
-
-        self.solarGridLayout.addWidget(self.uv, 2, 1, 1, 1)
-
-        self.irradianceLabel = QLabel(self.solarGroup)
-        self.irradianceLabel.setObjectName(u"irradianceLabel")
-        self.irradianceLabel.setFont(font4)
-
-        self.solarGridLayout.addWidget(self.irradianceLabel, 1, 0, 1, 1)
-
-        self.irradiance = QLabel(self.solarGroup)
-        self.irradiance.setObjectName(u"irradiance")
-        self.irradiance.setFont(font4)
-
-        self.solarGridLayout.addWidget(self.irradiance, 1, 1, 1, 1)
-
-        self.illuminance = QLabel(self.solarGroup)
-        self.illuminance.setObjectName(u"illuminance")
-        self.illuminance.setFont(font4)
-
-        self.solarGridLayout.addWidget(self.illuminance, 0, 1, 1, 1)
-
-        self.illuminanceLabel = QLabel(self.solarGroup)
-        self.illuminanceLabel.setObjectName(u"illuminanceLabel")
-        self.illuminanceLabel.setFont(font4)
-
-        self.solarGridLayout.addWidget(self.illuminanceLabel, 0, 0, 1, 1)
-
-        self.uvLabel = QLabel(self.solarGroup)
-        self.uvLabel.setObjectName(u"uvLabel")
-        self.uvLabel.setFont(font4)
-
-        self.solarGridLayout.addWidget(self.uvLabel, 2, 0, 1, 1)
-
-        self.solarSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.solarGridLayout.addItem(self.solarSpacer, 3, 0, 1, 1)
-
-
-        self.gridLayout.addWidget(self.solarGroup, 0, 2, 1, 1)
+        self.horizontalLayout.addWidget(self.windGroup)
 
         self.skyGroup = QGroupBox(websocket)
         self.skyGroup.setObjectName(u"skyGroup")
-        sizePolicy1 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.skyGroup.sizePolicy().hasHeightForWidth())
-        self.skyGroup.setSizePolicy(sizePolicy1)
-        self.skyGroup.setMinimumSize(QSize(300, 0))
-        self.skyGroup.setMaximumSize(QSize(300, 16777215))
+        self.skyGroup.setMinimumSize(QSize(320, 0))
+        self.skyGroup.setMaximumSize(QSize(320, 16777215))
         self.skyGroup.setFont(font2)
+        self.skyGroup.setFlat(True)
         self.gridLayout_2 = QGridLayout(self.skyGroup)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_2.setVerticalSpacing(-1)
+        self.gridLayout_2.setContentsMargins(-1, 0, -1, 0)
         self.precipitation = QGroupBox(self.skyGroup)
         self.precipitation.setObjectName(u"precipitation")
-        sizePolicy.setHeightForWidth(self.precipitation.sizePolicy().hasHeightForWidth())
-        self.precipitation.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.precipitation.sizePolicy().hasHeightForWidth())
+        self.precipitation.setSizePolicy(sizePolicy1)
         self.precipitation.setFont(font3)
         self.precipitation.setFlat(True)
         self.precipitation.setCheckable(False)
@@ -320,15 +352,19 @@ class Ui_websocket(object):
 
         self.formLayout_6.setWidget(0, QFormLayout.LabelRole, self.rateLabel)
 
-        self.rate = QLabel(self.precipitation)
+        self.rate = EasyLabel(self.precipitation)
         self.rate.setObjectName(u"rate")
+        self.rate.setEnabled(False)
         self.rate.setFont(font1)
+        self.rate.setProperty("showUnit", True)
 
         self.formLayout_6.setWidget(0, QFormLayout.FieldRole, self.rate)
 
-        self.rateDescription = QLabel(self.precipitation)
+        self.rateDescription = EasyLabel(self.precipitation)
         self.rateDescription.setObjectName(u"rateDescription")
+        self.rateDescription.setEnabled(False)
         self.rateDescription.setFont(font1)
+        self.rateDescription.setProperty("showUnit", False)
 
         self.formLayout_6.setWidget(1, QFormLayout.FieldRole, self.rateDescription)
 
@@ -338,9 +374,11 @@ class Ui_websocket(object):
 
         self.formLayout_6.setWidget(2, QFormLayout.LabelRole, self.accumulationLabel)
 
-        self.accumulation = QLabel(self.precipitation)
+        self.accumulation = EasyLabel(self.precipitation)
         self.accumulation.setObjectName(u"accumulation")
+        self.accumulation.setEnabled(False)
         self.accumulation.setFont(font1)
+        self.accumulation.setProperty("showUnit", True)
 
         self.formLayout_6.setWidget(2, QFormLayout.FieldRole, self.accumulation)
 
@@ -349,9 +387,6 @@ class Ui_websocket(object):
 
         self.lightning = QGroupBox(self.skyGroup)
         self.lightning.setObjectName(u"lightning")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.lightning.sizePolicy().hasHeightForWidth())
         self.lightning.setSizePolicy(sizePolicy2)
         self.lightning.setFont(font3)
@@ -359,18 +394,21 @@ class Ui_websocket(object):
         self.lightning.setCheckable(False)
         self.formLayout_4 = QFormLayout(self.lightning)
         self.formLayout_4.setObjectName(u"formLayout_4")
+        self.formLayout_4.setSizeConstraint(QLayout.SetNoConstraint)
         self.formLayout_4.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout_4.setLabelAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-        self.formLayout_4.setContentsMargins(0, -1, 0, -1)
+        self.formLayout_4.setContentsMargins(0, -1, 0, 0)
         self.lastStrikeLabel = QLabel(self.lightning)
         self.lastStrikeLabel.setObjectName(u"lastStrikeLabel")
         self.lastStrikeLabel.setFont(font1)
 
         self.formLayout_4.setWidget(0, QFormLayout.LabelRole, self.lastStrikeLabel)
 
-        self.lastStrike = QLabel(self.lightning)
+        self.lastStrike = EasyLabel(self.lightning)
         self.lastStrike.setObjectName(u"lastStrike")
+        self.lastStrike.setEnabled(False)
         self.lastStrike.setFont(font1)
+        self.lastStrike.setProperty("showUnit", True)
 
         self.formLayout_4.setWidget(0, QFormLayout.FieldRole, self.lastStrike)
 
@@ -380,9 +418,11 @@ class Ui_websocket(object):
 
         self.formLayout_4.setWidget(1, QFormLayout.LabelRole, self.strikeDistanceLabel)
 
-        self.strikeDistance = QLabel(self.lightning)
+        self.strikeDistance = EasyLabel(self.lightning)
         self.strikeDistance.setObjectName(u"strikeDistance")
+        self.strikeDistance.setEnabled(False)
         self.strikeDistance.setFont(font1)
+        self.strikeDistance.setProperty("showUnit", True)
 
         self.formLayout_4.setWidget(1, QFormLayout.FieldRole, self.strikeDistance)
 
@@ -392,9 +432,11 @@ class Ui_websocket(object):
 
         self.formLayout_4.setWidget(2, QFormLayout.LabelRole, self.strikeEnergyLabel)
 
-        self.strikeEnergy = QLabel(self.lightning)
+        self.strikeEnergy = EasyLabel(self.lightning)
         self.strikeEnergy.setObjectName(u"strikeEnergy")
+        self.strikeEnergy.setEnabled(False)
         self.strikeEnergy.setFont(font1)
+        self.strikeEnergy.setProperty("showUnit", False)
 
         self.formLayout_4.setWidget(2, QFormLayout.FieldRole, self.strikeEnergy)
 
@@ -404,18 +446,26 @@ class Ui_websocket(object):
 
         self.formLayout_4.setWidget(3, QFormLayout.LabelRole, self.strikeTotalLabel)
 
-        self.strikeTotal = QLabel(self.lightning)
+        self.strikeTotal = EasyLabel(self.lightning)
         self.strikeTotal.setObjectName(u"strikeTotal")
+        self.strikeTotal.setEnabled(False)
         self.strikeTotal.setFont(font1)
+        self.strikeTotal.setProperty("showUnit", False)
 
         self.formLayout_4.setWidget(3, QFormLayout.FieldRole, self.strikeTotal)
 
 
         self.gridLayout_2.addWidget(self.lightning, 1, 0, 1, 1)
 
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.gridLayout.addWidget(self.skyGroup, 0, 3, 1, 1)
+        self.gridLayout_2.addItem(self.verticalSpacer, 2, 0, 1, 1)
 
+
+        self.horizontalLayout.addWidget(self.skyGroup)
+
+        self.horizontalLayout.setStretch(0, 1)
+        self.horizontalLayout.setStretch(1, 1)
 
         self.retranslateUi(websocket)
 
@@ -424,78 +474,76 @@ class Ui_websocket(object):
 
     def retranslateUi(self, websocket):
         websocket.setWindowTitle(QCoreApplication.translate("websocket", u"Form", None))
-        self.airGroup.setTitle(QCoreApplication.translate("websocket", u"Air", None))
+        self.airGroup.setTitle("")
         self.temperatureLabel.setText(QCoreApplication.translate("websocket", u"Temperature:", None))
-        self.temperature.setText(QCoreApplication.translate("websocket", u"0", None))
-        self.temperature.setProperty("measurement", QCoreApplication.translate("websocket", u"temperature", None))
+        self.temperature.setText(QCoreApplication.translate("websocket", u"70\u00ba", None))
+        self.temperature.setProperty("measurement", "")
         self.humidityLabel.setText(QCoreApplication.translate("websocket", u"Humidity:", None))
-        self.humidity.setText(QCoreApplication.translate("websocket", u"0", None))
+        self.humidity.setText(QCoreApplication.translate("websocket", u"75%", None))
         self.humidity.setProperty("measurement", QCoreApplication.translate("websocket", u"humidity", None))
         self.feelsLikeLabel.setText(QCoreApplication.translate("websocket", u"Feels Like:", None))
-        self.feelsLike.setText(QCoreApplication.translate("websocket", u"0", None))
+        self.feelsLike.setText(QCoreApplication.translate("websocket", u"70\u00ba", None))
         self.feelsLike.setProperty("measurement", QCoreApplication.translate("websocket", u"temperature", None))
         self.dewpointLabel.setText(QCoreApplication.translate("websocket", u"Dew Point:", None))
-        self.dewpoint.setText(QCoreApplication.translate("websocket", u"0", None))
+        self.dewpoint.setText(QCoreApplication.translate("websocket", u"59.2\u00ba", None))
         self.dewpoint.setProperty("measurement", QCoreApplication.translate("websocket", u"temperature", None))
         self.airDensityLabel.setText(QCoreApplication.translate("websocket", u"Air Density:", None))
-        self.airDensity.setText(QCoreApplication.translate("websocket", u"0", None))
+        self.airDensity.setText(QCoreApplication.translate("websocket", u"1.18 oz/ft\u00b3", None))
         self.airDensity.setProperty("measurement", QCoreApplication.translate("websocket", u"pressure", None))
         self.pressureLabel.setText(QCoreApplication.translate("websocket", u"Pressure:", None))
-        self.pressure.setText(QCoreApplication.translate("websocket", u"0", None))
-        self.pressure.setProperty("measurement", QCoreApplication.translate("websocket", u"pressure", None))
-        self.windGroup.setTitle(QCoreApplication.translate("websocket", u"Wind", None))
+        self.pressure.setText(QCoreApplication.translate("websocket", u"29.7 inHg", None))
+        self.illuminanceLabel.setText(QCoreApplication.translate("websocket", u"Illuminance:", None))
+        self.illuminance.setText(QCoreApplication.translate("websocket", u"91.2k lux", None))
+        self.illuminance.setProperty("measurement", "")
+        self.irradianceLabel.setText(QCoreApplication.translate("websocket", u"Radiation:", None))
+        self.irradiance.setText(QCoreApplication.translate("websocket", u"858 W/m\u00b2", None))
+        self.irradiance.setProperty("measurement", "")
+        self.uvLabel.setText(QCoreApplication.translate("websocket", u"UV:", None))
+        self.uv.setText(QCoreApplication.translate("websocket", u"5", None))
+        self.uv.setProperty("measurement", "")
+        self.windGroup.setTitle("")
         self.windNow.setTitle(QCoreApplication.translate("websocket", u"Now", None))
         self.windLabel.setText(QCoreApplication.translate("websocket", u"Speed:", None))
-        self.wind.setText("")
+        self.wind.setText(QCoreApplication.translate("websocket", u"0 mph", None))
         self.wind.setProperty("measurement", QCoreApplication.translate("websocket", u"wind", None))
         self.windDirectionLabel.setText(QCoreApplication.translate("websocket", u"Direction:", None))
-        self.windDirection.setText("")
+        self.windDirection.setText(QCoreApplication.translate("websocket", u"NE (39\u00ba)", None))
         self.windDirection.setProperty("measurement", QCoreApplication.translate("websocket", u"windDirection", None))
-        self.windAverages.setTitle(QCoreApplication.translate("websocket", u"Averages", None))
+        self.windAverages.setTitle(QCoreApplication.translate("websocket", u"Average", None))
         self.lullLabel.setText(QCoreApplication.translate("websocket", u"Lull:", None))
-        self.lull.setText("")
+        self.lull.setText(QCoreApplication.translate("websocket", u"0 mph", None))
         self.lull.setProperty("measurement", QCoreApplication.translate("websocket", u"lullSpeed", None))
         self.gustLabel.setText(QCoreApplication.translate("websocket", u"Gust:", None))
-        self.gust.setText("")
+        self.gust.setText(QCoreApplication.translate("websocket", u"1.5 mph", None))
         self.gust.setProperty("measurement", QCoreApplication.translate("websocket", u"gustSpeed", None))
         self.windAverageLabel.setText(QCoreApplication.translate("websocket", u"Speed", None))
-        self.windAverage.setText("")
+        self.windAverage.setText(QCoreApplication.translate("websocket", u"0.9 mph", None))
         self.windAverage.setProperty("measurement", QCoreApplication.translate("websocket", u"windAverage", None))
         self.windDirectionAverageLabel.setText(QCoreApplication.translate("websocket", u"Direction:", None))
-        self.windDirectionAverage.setText("")
+        self.windDirectionAverage.setText(QCoreApplication.translate("websocket", u"NNE (22\u00ba)", None))
         self.windDirectionAverage.setProperty("measurement", QCoreApplication.translate("websocket", u"windDirection", None))
-        self.solarGroup.setTitle(QCoreApplication.translate("websocket", u"Solar", None))
-        self.uv.setText("")
-        self.uv.setProperty("measurement", "")
-        self.irradianceLabel.setText(QCoreApplication.translate("websocket", u"Solar Radiation:", None))
-        self.irradiance.setText("")
-        self.irradiance.setProperty("measurement", "")
-        self.illuminance.setText("")
-        self.illuminance.setProperty("measurement", "")
-        self.illuminanceLabel.setText(QCoreApplication.translate("websocket", u"Illuminance:", None))
-        self.uvLabel.setText(QCoreApplication.translate("websocket", u"UV:", None))
-        self.skyGroup.setTitle(QCoreApplication.translate("websocket", u"Sky", None))
+        self.skyGroup.setTitle("")
         self.precipitation.setTitle(QCoreApplication.translate("websocket", u"Precipitation", None))
         self.rateLabel.setText(QCoreApplication.translate("websocket", u"Rate:", None))
-        self.rate.setText("")
+        self.rate.setText(QCoreApplication.translate("websocket", u"0 in/hr", None))
         self.rate.setProperty("measurement", QCoreApplication.translate("websocket", u"wind", None))
-        self.rateDescription.setText("")
+        self.rateDescription.setText(QCoreApplication.translate("websocket", u"None", None))
         self.rateDescription.setProperty("measurement", QCoreApplication.translate("websocket", u"wind", None))
-        self.accumulationLabel.setText(QCoreApplication.translate("websocket", u"Accum:", None))
-        self.accumulation.setText("")
+        self.accumulationLabel.setText(QCoreApplication.translate("websocket", u"Total:", None))
+        self.accumulation.setText(QCoreApplication.translate("websocket", u"0 in", None))
         self.accumulation.setProperty("measurement", QCoreApplication.translate("websocket", u"windDirection", None))
         self.lightning.setTitle(QCoreApplication.translate("websocket", u"Lightning", None))
         self.lastStrikeLabel.setText(QCoreApplication.translate("websocket", u"Last Srike:", None))
-        self.lastStrike.setText("")
+        self.lastStrike.setText(QCoreApplication.translate("websocket", u"\u221e", None))
         self.lastStrike.setProperty("measurement", QCoreApplication.translate("websocket", u"wind", None))
         self.strikeDistanceLabel.setText(QCoreApplication.translate("websocket", u"Distance:", None))
-        self.strikeDistance.setText("")
+        self.strikeDistance.setText(QCoreApplication.translate("websocket", u"\u221e", None))
         self.strikeDistance.setProperty("measurement", QCoreApplication.translate("websocket", u"windDirection", None))
         self.strikeEnergyLabel.setText(QCoreApplication.translate("websocket", u"Energy:", None))
-        self.strikeEnergy.setText("")
+        self.strikeEnergy.setText(QCoreApplication.translate("websocket", u"0", None))
         self.strikeEnergy.setProperty("measurement", QCoreApplication.translate("websocket", u"windDirection", None))
         self.strikeTotalLabel.setText(QCoreApplication.translate("websocket", u"Total:", None))
-        self.strikeTotal.setText("")
+        self.strikeTotal.setText(QCoreApplication.translate("websocket", u"0", None))
         self.strikeTotal.setProperty("measurement", QCoreApplication.translate("websocket", u"windDirection", None))
     # retranslateUi
 

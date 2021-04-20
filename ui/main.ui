@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>925</width>
-    <height>427</height>
+    <width>504</width>
+    <height>399</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,18 +15,30 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
-     <widget class="QTabWidget" name="tabs">
+     <widget class="TabHolder" name="tabs">
       <property name="tabShape">
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
        <number>1</number>
       </property>
+      <property name="elideMode">
+       <enum>Qt::ElideRight</enum>
+      </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
       </property>
-      <widget class="QWidget" name="udp">
+      <widget class="QWidget" name="udpTab">
        <attribute name="title">
         <string>UDP</string>
        </attribute>
@@ -44,18 +56,11 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="UDPTab" name="udpFrame">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-         </widget>
+         <widget class="UDPTab" name="udp" native="true"/>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="webSocket">
+      <widget class="QWidget" name="webSocketTab">
        <attribute name="title">
         <string>WebSocket</string>
        </attribute>
@@ -76,17 +81,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="WSTab" name="webFrame">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-          <property name="lineWidth">
-           <number>0</number>
-          </property>
-         </widget>
+         <widget class="WSTab" name="webSocket" native="true"/>
         </item>
        </layout>
       </widget>
@@ -357,8 +352,11 @@
     </item>
     <item>
      <widget class="QFrame" name="frame">
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Plain</enum>
@@ -366,10 +364,7 @@
       <property name="lineWidth">
        <number>0</number>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <property name="spacing">
-        <number>0</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -382,8 +377,24 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QPushButton" name="connectionToggle_2">
+       <item row="0" column="1" rowspan="2" colspan="2">
+        <widget class="QComboBox" name="stationSelection">
+         <property name="maximumSize">
+          <size>
+           <width>120</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentText">
+          <string notr="true"/>
+         </property>
+         <property name="frame">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" rowspan="2">
+        <widget class="connectionToggle" name="connectionToggle">
          <property name="maximumSize">
           <size>
            <width>100</width>
@@ -395,29 +406,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QComboBox" name="comboBox_2">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </item>
@@ -428,7 +416,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>925</width>
+     <width>504</width>
      <height>24</height>
     </rect>
    </property>
@@ -437,18 +425,147 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>UDPTab</class>
-   <extends>QFrame</extends>
+   <class>TabHolder</class>
+   <extends>QTabWidget</extends>
    <header>ui/socketsUI</header>
    <container>1</container>
+   <slots>
+    <signal>tabSignal(Tab)</signal>
+    <slot>sendTab(int)</slot>
+   </slots>
   </customwidget>
   <customwidget>
    <class>WSTab</class>
-   <extends>QFrame</extends>
+   <extends>QWidget</extends>
    <header>ui/socketsUI</header>
    <container>1</container>
+   <slots>
+    <signal>connectionSignal(bool)</signal>
+    <slot>setStation(QString)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>UDPTab</class>
+   <extends>QWidget</extends>
+   <header>ui/socketsUI</header>
+   <container>1</container>
+   <slots>
+    <signal>connectionSignal(bool)</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>connectionToggle</class>
+   <extends>QPushButton</extends>
+   <header>ui/connectionToggle</header>
+   <slots>
+    <slot>changeChildTab(Tab)</slot>
+    <slot>buttonClicked(bool)</slot>
+    <slot>refreshText(bool)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>connectionToggle</tabstop>
+  <tabstop>stationSelection</tabstop>
+  <tabstop>tabs</tabstop>
+ </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>tabs</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>tabs</receiver>
+   <slot>sendTab(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>251</x>
+     <y>178</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabs</sender>
+   <signal>tabSignal(Tab)</signal>
+   <receiver>connectionToggle</receiver>
+   <slot>changeChildTab(Tab)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>251</x>
+     <y>178</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>352</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>connectionToggle</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>connectionToggle</receiver>
+   <slot>buttonClicked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>352</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>352</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>udp</sender>
+   <signal>connectionSignal(bool)</signal>
+   <receiver>connectionToggle</receiver>
+   <slot>refreshText(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>251</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>352</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>webSocket</sender>
+   <signal>connectionSignal(bool)</signal>
+   <receiver>connectionToggle</receiver>
+   <slot>refreshText(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>251</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>352</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stationSelection</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>webSocket</receiver>
+   <slot>setStation(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>182</x>
+     <y>351</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

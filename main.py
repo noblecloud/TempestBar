@@ -1,4 +1,6 @@
 import sys
+from pprint import pprint
+
 from PySide6 import QtCore
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication, QMainWindow
@@ -19,10 +21,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.devices = self.getDevices()
 		print(list(self.devices.keys()))
 		self.setupUi(self)
-		# self.comboBox_2.addItems(list(self.devices.keys()))
-		# for item in self.devices.keys():
-		self.comboBox_2.addItem(str(list(self.devices.keys())[0]))
-		self.connectionToggle_2.clicked.connect(self.toggle)
+
+		self.stationSelection.addItem(str(list(self.devices.keys())[0]))
+		self.stationSelection.addItem(str(116321))
+		self.connectionToggle.clicked.connect(self.toggle)
 
 	def getDevices(self):
 		import urllib.request
@@ -36,6 +38,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		with urllib.request.urlopen(url) as response:
 			the_page: bytes = response.read()
 			data = loads(the_page.decode('ascii'))
+			pprint(data)
 			for x in data['stations']:
 				for y in x['devices']:
 					if y['device_type'] != 'HB':

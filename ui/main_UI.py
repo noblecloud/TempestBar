@@ -12,51 +12,51 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-from ui.socketsUI import UDPTab
+from ui.socketsUI import TabHolder
 from ui.socketsUI import WSTab
+from ui.socketsUI import UDPTab
+from ui.connectionToggle import connectionToggle
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(925, 427)
+        MainWindow.resize(504, 399)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_3 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.tabs = QTabWidget(self.centralwidget)
+        self.verticalLayout_3.setContentsMargins(-1, 0, -1, 0)
+        self.tabs = TabHolder(self.centralwidget)
         self.tabs.setObjectName(u"tabs")
         self.tabs.setTabShape(QTabWidget.Rounded)
+        self.tabs.setElideMode(Qt.ElideRight)
         self.tabs.setUsesScrollButtons(False)
-        self.udp = QWidget()
-        self.udp.setObjectName(u"udp")
-        self.verticalLayout = QVBoxLayout(self.udp)
+        self.udpTab = QWidget()
+        self.udpTab.setObjectName(u"udpTab")
+        self.verticalLayout = QVBoxLayout(self.udpTab)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.udpFrame = UDPTab(self.udp)
-        self.udpFrame.setObjectName(u"udpFrame")
-        self.udpFrame.setFrameShape(QFrame.NoFrame)
-        self.udpFrame.setFrameShadow(QFrame.Plain)
+        self.udp = UDPTab(self.udpTab)
+        self.udp.setObjectName(u"udp")
 
-        self.verticalLayout.addWidget(self.udpFrame)
+        self.verticalLayout.addWidget(self.udp)
 
-        self.tabs.addTab(self.udp, "")
-        self.webSocket = QWidget()
-        self.webSocket.setObjectName(u"webSocket")
-        self.verticalLayout_2 = QVBoxLayout(self.webSocket)
+        self.tabs.addTab(self.udpTab, "")
+        self.webSocketTab = QWidget()
+        self.webSocketTab.setObjectName(u"webSocketTab")
+        self.verticalLayout_2 = QVBoxLayout(self.webSocketTab)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.webFrame = WSTab(self.webSocket)
-        self.webFrame.setObjectName(u"webFrame")
-        self.webFrame.setFrameShape(QFrame.NoFrame)
-        self.webFrame.setFrameShadow(QFrame.Plain)
-        self.webFrame.setLineWidth(0)
+        self.webSocket = WSTab(self.webSocketTab)
+        self.webSocket.setObjectName(u"webSocket")
 
-        self.verticalLayout_2.addWidget(self.webFrame)
+        self.verticalLayout_2.addWidget(self.webSocket)
 
-        self.tabs.addTab(self.webSocket, "")
+        self.tabs.addTab(self.webSocketTab, "")
         self.status = QWidget()
         self.status.setObjectName(u"status")
         self.gridLayout_3 = QGridLayout(self.status)
@@ -185,28 +185,29 @@ class Ui_MainWindow(object):
 
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.NoFrame)
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
+        self.frame.setSizePolicy(sizePolicy)
         self.frame.setFrameShadow(QFrame.Plain)
         self.frame.setLineWidth(0)
-        self.horizontalLayout_3 = QHBoxLayout(self.frame)
-        self.horizontalLayout_3.setSpacing(0)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.connectionToggle_2 = QPushButton(self.frame)
-        self.connectionToggle_2.setObjectName(u"connectionToggle_2")
-        self.connectionToggle_2.setMaximumSize(QSize(100, 16777215))
+        self.gridLayout = QGridLayout(self.frame)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.stationSelection = QComboBox(self.frame)
+        self.stationSelection.setObjectName(u"stationSelection")
+        self.stationSelection.setMaximumSize(QSize(120, 16777215))
+        self.stationSelection.setCurrentText(u"")
+        self.stationSelection.setFrame(False)
 
-        self.horizontalLayout_3.addWidget(self.connectionToggle_2)
+        self.gridLayout.addWidget(self.stationSelection, 0, 1, 2, 2)
 
-        self.comboBox_2 = QComboBox(self.frame)
-        self.comboBox_2.setObjectName(u"comboBox_2")
-        self.comboBox_2.setMaximumSize(QSize(100, 16777215))
+        self.connectionToggle = connectionToggle(self.frame)
+        self.connectionToggle.setObjectName(u"connectionToggle")
+        self.connectionToggle.setMaximumSize(QSize(100, 16777215))
 
-        self.horizontalLayout_3.addWidget(self.comboBox_2)
-
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
+        self.gridLayout.addWidget(self.connectionToggle, 0, 0, 2, 1)
 
 
         self.verticalLayout_3.addWidget(self.frame)
@@ -214,13 +215,21 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 925, 24))
+        self.menubar.setGeometry(QRect(0, 0, 504, 24))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        QWidget.setTabOrder(self.connectionToggle, self.stationSelection)
+        QWidget.setTabOrder(self.stationSelection, self.tabs)
 
         self.retranslateUi(MainWindow)
+        self.tabs.currentChanged.connect(self.tabs.sendTab)
+        self.tabs.tabSignal.connect(self.connectionToggle.changeChildTab)
+        self.connectionToggle.clicked.connect(self.connectionToggle.buttonClicked)
+        self.udp.connectionSignal.connect(self.connectionToggle.refreshText)
+        self.webSocket.connectionSignal.connect(self.connectionToggle.refreshText)
+        self.stationSelection.currentTextChanged.connect(self.webSocket.setStation)
 
         self.tabs.setCurrentIndex(1)
 
@@ -230,8 +239,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.tabs.setTabText(self.tabs.indexOf(self.udp), QCoreApplication.translate("MainWindow", u"UDP", None))
-        self.tabs.setTabText(self.tabs.indexOf(self.webSocket), QCoreApplication.translate("MainWindow", u"WebSocket", None))
+        self.tabs.setTabText(self.tabs.indexOf(self.udpTab), QCoreApplication.translate("MainWindow", u"UDP", None))
+        self.tabs.setTabText(self.tabs.indexOf(self.webSocketTab), QCoreApplication.translate("MainWindow", u"WebSocket", None))
         self.hubGroup.setTitle(QCoreApplication.translate("MainWindow", u"Hub Status", None))
         self.hubSerialLabel.setText(QCoreApplication.translate("MainWindow", u"Serial:", None))
         self.hubUptimeLabel.setText(QCoreApplication.translate("MainWindow", u"Uptime:", None))
@@ -259,6 +268,6 @@ class Ui_MainWindow(object):
         self.deviceBattery.setText("")
         self.deviceBattery.setProperty("measurement", "")
         self.tabs.setTabText(self.tabs.indexOf(self.status), QCoreApplication.translate("MainWindow", u"Status", None))
-        self.connectionToggle_2.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
+        self.connectionToggle.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
     # retranslateUi
 
