@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from constants import classAtlas, summaryAtlas, dewpointCalc, airDensityCalc
+from constants import classAtlas, summaryAtlas, airDensityCalc
 from WeatherUnits.defaults.WeatherFlow import Wind
 from WeatherUnits.length import Length
 from WeatherUnits.others import Direction, Humidity, Lux, RadiantFlux, Volts
 from WeatherUnits.pressure import Pressure
 from WeatherUnits.time import Minute, Second
-from WeatherUnits.temperature import Heat as Temperature
+from WeatherUnits.temperature import Temperature
 
 
 class DataMessage(dict):
@@ -396,12 +396,36 @@ class TempestMessage(Observation, _Sky, _Air):
 		try:
 			value = self.data['dewpoint']
 		except KeyError:
-			value = Temperature(dewpointCalc(self.temperature, self.humidity))
+			value = self.temperature.dewpoint(self.humidity)
+		return value.localized
+
+	@property
+	def heatIndex(self):
+		try:
+			value = self.data['heatIndex']
+		except KeyError:
+			value = self.temperature.heatIndex(self.humidity)
+		return value.localized
+
+	@property
+	def windChill(self):
+		try:
+			value = self.data['windChill']
+		except KeyError:
+			value = self.temperature.windChill(self.wind)
 		return value.localized
 
 	@property
 	def feelsLike(self):
-		return self.data['feelsLike']
+		try:
+			return self.data['feelsLike']
+		except KeyError:
+			if self.temperature.c > 27:
+				return self.heatIndex
+			elif self.temperature.c < 10:
+				return self.windChill
+			else:
+				return self.temperature
 
 	@property
 	def airDensity(self):
