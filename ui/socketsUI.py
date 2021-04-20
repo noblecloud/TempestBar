@@ -1,224 +1,152 @@
 import logging
-import pprint
 
 from PySide6 import QtCore
-from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QFrame, QGridLayout
+from PySide6.QtCore import QEvent, Signal, Slot
+from PySide6.QtWidgets import QFrame, QGridLayout, QTabWidget, QWidget
 
 from messages import DeviceStatusMessage, LightningMessage, Observation, TempestMessage, WindMessage, HubStatusMessage
 from sockets import UDPMessenger, WSMessenger
-from ui.websocket_UI import Ui_websocket
+from ui.socketTab_UI import Ui_socketTab
 
 
-class Tab(QFrame):
+class Tab(QWidget, Ui_socketTab):
+
+	connectionSignal = Signal(bool)
+
 	def __init__(self, *args, **kwargs):
 		super(Tab, self).__init__(*args, **kwargs)
 		self.setupUi(self)
+		self.skyGroup.setHidden(True)
+		self.setMaximumSize(630, 368)
 		self.installEventFilter(self)
 		self.messenger.signal.connect(self.updateItems)
 
+	def toggle(self) -> bool:
+		if not self.messenger.running:
+			self.start()
+		elif self.messenger.running:
+			self.stop()
+		self.connectionSignal.emit(self.messenger.running)
+
 	@Slot()
-	def toggle(self):
-		if self.messenger.running:
-			self.messenger.stop()
+	def setStation(self, value):
+		print(f'station set to: {value}')
+		self.messenger.setStation(value)
+
+	def start(self):
+		self.messenger.begin()
+
+	def stop(self):
+		self.messenger.end()
+
+	@property
+	def running(self) -> bool:
+		return self.messenger.running
+
+	@Slot(Observation)
+	def updateItems(self, event: Observation):
+
+		if isinstance(event, WindMessage):
+			self.receiveWind(event)
+
+		if isinstance(event, LightningMessage):
+			self.receiveLightning(event)
+
+		if isinstance(event, TempestMessage):
+
+			self.setWindGroup(event)
+			self.setAirGroup(event)
+			self.setSolarGroup(event)
+			self.setSkyGroup(event)
 		else:
-			self.messenger.start()
+			pass
 
-	def eventFilter(self, obj, event):
-		if event.type() == QtCore.QEvent.KeyPress:
-			if event.key() == QtCore.Qt.Key_R:
-				self.loop.create_task(self.messenger.connectSocket())
-		return super(Tab, self).eventFilter(obj, event)
+	def setStatus(self, event):
+		self.deviceBattery(event.battery)
+
+		if isinstance(event, DeviceStatusMessage):
+			# 'uptime'
+			# 'firmware'
+			# 'rssi'
+			# 'battery'
+			# 'rssiHub'
+			# 'sensorStatus'
+
+			self.deviceUptime(event.uptime)
+			self.deviceBattery(event.battery)
+			self.deviceSerial(event.serial)
+			self.deviceFirmware(event.firmware)
+			self.deviceSensors(event.sensorStatus)
+
+		if isinstance(event, HubStatusMessage):
+			self.hubUptime(event.uptime)
+			self.hubSerial(event.serial)
+			self.hubFirmware(event.firmware)
+
+	def setSkyGroup(self, event):
+		self.strikeTotal(event.strikes)
+		self.strikeDistance(event.strikeDistance)
+		self.rate(event.precipRate)
+		if event.strikes + event.accumulation > 0:
+			self.skyGroup.show()
+			if event.strikes:
+				self.skyGroup.lightning.show()
+			else:
+				self.skyGroup.lightning.hide()
+			if event.precipRate + event.accumulation > 0:
+				self.skyGroup.precipitation.show()
+			else:
+				self.skyGroup.precipitation.hide()
+
+	def setSolarGroup(self, event):
+		self.illuminance(event.illuminance)
+		self.irradiance(event.irradiance)
+		self.uv(event.uvi)
+
+	def setAirGroup(self, event):
+		self.temperature(event.temperature)
+		self.feelsLike(event.feelsLike)
+		self.dewpoint(event.dewpoint)
+		self.humidity(event.humidity)
+		self.pressure(event.pressure)
+		self.airDensity(event.airDensity)
+
+	def setWindGroup(self, event):
+		self.windAverage(event.wind)
+		self.lull(event.lullSpeed)
+		self.gust(event.gustSpeed)
+		self.windDirectionAverage(event.windDirection)
+
+	def receiveLightning(self, event: LightningMessage):
+		self.lastStrike(event.time)
+
+	def receiveWind(self, event: WindMessage):
+		self.wind(event.speed)
+		if event.speed != 0:
+			self.windDirection(event.direction)
 
 
-class UDPTab(Tab, Ui_websocket):
+class TabHolder(QTabWidget):
+
+	tabSignal = Signal(Tab)
+
+	@Slot(int)
+	def sendTab(self, int):
+		print('sending tab: ', end='')
+		tab = self.currentWidget().layout().itemAt(0).widget()
+		print(tab.__class__.__name__)
+		self.tabSignal.emit(tab)
+
+
+class UDPTab(Tab):
 
 	def __init__(self, *args, **kwargs):
 		self.messenger = UDPMessenger()
 		super(UDPTab, self).__init__(*args, **kwargs)
-		self.feelsLike.deleteLater()
-		self.feelsLikeLabel.deleteLater()
-		layout: QGridLayout = self.airGroup.layout()
-		layout.takeAt(4)
-		layout.takeAt(4)
-
-	@Slot(Observation)
-	def updateItems(self, event: Observation):
-
-		if isinstance(event, WindMessage):
-			value = '{} at {}'.format(event.direction.cardinal, event.speed.withUnit)
-			self.wind.setText(value)
-		if isinstance(event, TempestMessage):
-
-			# Wind Group
-			self.windAverage.setText(event.wind.withUnit)
-			self.lull.setText(event.lullSpeed.withUnit)
-			self.gust.setText(event.gustSpeed.withUnit)
-			self.windDirection.setText('{} ({})'.format(event.windDirection.cardinal, event.windDirection.withUnit.strip(' ')))
-
-			# Air
-			self.temperature.setText(event.temperature.str)
-			self.humidity.setText(event.humidity.str)
-			self.pressure.setText(event.pressure.withUnit)
-			self.airDensity.setText(event.airDensity.withUnit)
-			self.dewpoint.setText(event.dewpoint.str)
-
-			# Solar
-			self.illuminance.setText(event.illuminance.withUnit)
-			self.irradiance.setText(event.irradiance.withUnit)
-			self.uv.setText(str(event.uvi))
-
-			# Sky
-			if event.strikes + event.accumulation:
-				self.skyGroup.setDisabled(False)
-				self.precipitation.setDisabled(False)
-				self.lightning.setDisabled(False)
-				if event.strikes:
-					self.strikes.show()
-					self.strikesLabel.show()
-					self.strikeDistance.show()
-					self.strikeDistanceLabel.show()
-					self.strikes.setText(str(event.strikes))
-					self.strikeDistance.setText(event.strikeDistance.withUnit)
-				else:
-					self.strikes.hide()
-					self.strikesLabel.hide()
-					self.strikeDistance.hide()
-					self.strikeDistanceLabel.hide()
-
-				if event.accumulation > 0:
-					self.precipRate.show()
-					self.precipRateLabel.show()
-					self.precipRate.setText(event.accumulation.withUnit)
-				else:
-					self.precipRate.hide()
-					self.precipRateLabel.hide()
-				self.accumulationLabel.hide()
-				self.accumulation.hide()
-			else:
-				self.skyGroup.setDisabled(True)
-				self.precipitation.setDisabled(True)
-				self.lightning.setDisabled(True)
 
 
-		if isinstance(event, LightningMessage):
-			logging.debug("Strike!")
-
-
-
-		# Status
-		# self.deviceBattery.setText(event.battery.withUnit)
-
-		# if isinstance(event, DeviceStatusMessage):
-		# 	# 'uptime'
-		# 	# 'firmware'
-		# 	# 'rssi'
-		# 	# 'battery'
-		# 	# 'rssiHub'
-		# 	# 'sensorStatus'
-		#
-		# 	self.deviceUptime.setText(event.uptime)
-		# 	self.deviceBattery.setText(event.battery.withUnit)
-		# 	self.deviceSerial.setText(event.serial)
-		# 	self.deviceFirmware.setText(event.firmware)
-		# 	self.deviceSensors.setText(str(event.sensorStatus))
-
-		# if isinstance(event, HubStatusMessage):
-		# 	self.hubUptime.setText(event.uptime)
-		# 	self.hubSerial.setText(event.serial)
-		# 	self.hubFirmware.setText(event.firmware)
-
-		else:
-			pass
-# self.statusbar.showMessage(str(event))
-# print(event)
-
-
-class WSTab(Tab, Ui_websocket):
+class WSTab(Tab):
 
 	def __init__(self, *args, **kwargs):
 		self.messenger = WSMessenger()
-		self.messenger.signal.connect(self.updateItems)
 		super(WSTab, self).__init__(*args, **kwargs)
-
-	@Slot(Observation)
-	def updateItems(self, event: Observation):
-
-		if isinstance(event, WindMessage):
-			self.wind.setText(event.speed.withUnit)
-			if event.speed != 0:
-				self.windDirection.setText('{} ({}º)'.format(event.direction.cardinal, event.direction.withUnit.strip(' ')))
-
-		if isinstance(event, LightningMessage):
-			event: LightningMessage
-			logging.debug("Strike!")
-			pprint.pprint(event.time)
-			self.lastStrike.setText(event.time)
-
-		if isinstance(event, TempestMessage):
-
-			# Wind Group
-			self.windAverage.setText(event.wind.withUnit)
-			self.lull.setText(event.lullSpeed.withUnit)
-			self.gust.setText(event.gustSpeed.withUnit)
-			self.windDirectionAverage.setText('{} ({}º)'.format(event.windDirection.cardinal, event.windDirection.withUnit.strip(' ')))
-
-			# Air
-			self.temperature.setText(event.temperature.str)
-			self.feelsLike.setText(event.feelsLike.str)
-			self.dewpoint.setText(event.dewpoint.str)
-			self.humidity.setText(str(event.humidity))
-			self.pressure.setText(event.pressure.withUnit)
-			self.airDensity.setText(event.airDensity.withUnit)
-
-			# Solar
-			self.illuminance.setText(event.illuminance.withUnit)
-			self.irradiance.setText(event.irradiance.withUnit)
-			self.uv.setText(str(event.uvi))
-
-			# Sky
-			if event.strikes + event.accumulation > 0:
-				self.skyGroup.setDisabled(False)
-				if event.strikes:
-					self.lightning.show()
-					self.strikeTotal.setText(str(event.strikes))
-					self.strikeDistance.setText(event.strikeDistance.withUnit)
-				else:
-					self.lightning.hide()
-
-				if event.accumulation > 0:
-					self.precipitation.show()
-					self.rate.setText(event.precipRate.withUnit)
-				else:
-					self.precipitation.hide()
-			else:
-				self.skyGroup.setDisabled(True)
-
-		# Status
-		# self.deviceBattery.setText(event.battery.withUnit)
-
-		# if isinstance(event, DeviceStatusMessage):
-		# 	# 'uptime'
-		# 	# 'firmware'
-		# 	# 'rssi'
-		# 	# 'battery'
-		# 	# 'rssiHub'
-		# 	# 'sensorStatus'
-		#
-		# 	self.deviceUptime.setText(event.uptime)
-		# 	self.deviceBattery.setText(event.battery.withUnit)
-		# 	self.deviceSerial.setText(event.serial)
-		# 	self.deviceFirmware.setText(event.firmware)
-		# 	self.deviceSensors.setText(str(event.sensorStatus))
-
-		# if isinstance(event, HubStatusMessage):
-		# 	self.hubUptime.setText(event.uptime)
-		# 	self.hubSerial.setText(event.serial)
-		# 	self.hubFirmware.setText(event.firmware)
-
-		else:
-			pass
-# self.statusbar.showMessage(str(event))
-# print(event)
-# 	loop = asyncio.get_event_loop()
-# 	self.messenger = WSMessenger(loop)

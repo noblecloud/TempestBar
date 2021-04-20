@@ -1,6 +1,6 @@
 from json import dumps, loads
 from pprint import pprint
-from time import sleep
+from secrets import token_urlsafe as genUUID
 import logging
 
 import websocket
@@ -12,6 +12,8 @@ from messages import *
 class _Messenger(QObject):
 	signal: Signal = Signal(Observation)
 	running: bool = False
+	stationID: int
+
 	messageTypes = {'rapid_wind': WindMessage, 'evt_precip': RainStartMessage, 'evt_strike': LightningMessage,
 	                'obs_st':     TempestMessage, 'obs_air': AirMessage, 'obs_sky': SkyMessage,
 	                'hub_status': HubStatusMessage, 'device_status': DeviceStatusMessage}
@@ -32,15 +34,17 @@ class _Messenger(QObject):
 		else:
 			logging.debug("INVALID MESSAGE TYPE", message['type'])
 
+	def setStation(self, value):
+		self.stationID = int(value)
+
 
 class WSMessenger(QThread, _Messenger):
 	token = '61173523-5a94-4392-bc6b-2e1d375d17fe'
 	uri = 'wss://ws.weatherflow.com/swd/data?token=' + token
-
-	deviceID = 116322
-	id = "59cb18db"
+	uuid: str
 
 	def __init__(self, parent=None):
+		self.uuid = genUUID(8)
 		super(WSMessenger, self).__init__(parent)
 		self.WS = websocket.WebSocketApp(self.uri,
 		                                 on_open=self.on_open,
@@ -50,14 +54,17 @@ class WSMessenger(QThread, _Messenger):
 
 	def genMessage(self, messageType: str) -> dict[str:str]:
 		return {"type":      messageType,
-		        "device_id": self.deviceID,
-		        "id":        self.id}
+		        "device_id": self.stationID,
+		        "id":        self.uuid}
 
 	def run(self):
-		self.running = True
 		self.WS.run_forever()
 
-	def stop(self):
+	def begin(self):
+		self.running = True
+		self.start()
+
+	def end(self):
 		self.running = False
 		self.WS.close()
 
@@ -86,13 +93,13 @@ class UDPMessenger(_Messenger):
 	def __init__(self, *args, **kwargs):
 		super(UDPMessenger, self).__init__(*args, **kwargs)
 
-	def start(self):
+	def begin(self):
 		self.udpSocket = self.QUdpSocket(self)
 		self.connectSocket()
 		self.running = True
 		self.listen()
 
-	def stop(self):
+	def end(self):
 		self.running = False
 		self.udpSocket.close()
 
@@ -109,7 +116,6 @@ class UDPMessenger(_Messenger):
 
 
 web = True
-
 if __name__ == '__main__' and web:
 	ws = WSMessenger()
 	ws.run()
@@ -138,7 +144,6 @@ elif __name__ == '__main__':
 
 	try:
 		while True:
-			sleep(1)
 			readable, writable, exceptional = select(sock_list, [], sock_list, 0)
 			for s in readable:
 				data, addr = s.recvfrom(4096)
