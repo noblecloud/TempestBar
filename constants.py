@@ -4,7 +4,7 @@ from WeatherUnits.defaults.WeatherFlow import Wind
 from WeatherUnits.defaults.WeatherFlow.units import Density, PrecipitationType, Temperature, Precipitation
 from WeatherUnits.length import Kilometer, Millimeter
 from WeatherUnits.others import Direction, Humidity, Lux, RadiantFlux, Volts
-from WeatherUnits.pressure import mmHg, Pressure
+from WeatherUnits.pressure import Pressure, hPa
 from WeatherUnits.temperature import Celsius
 from WeatherUnits.time import Minute, Second
 
@@ -27,7 +27,7 @@ classAtlas = {
 		"wetbulb":                             Celsius,
 		"delta_t":                             Celsius,
 		'humidity':                            Humidity,
-		'pressure':                            mmHg,
+		'pressure':                            hPa,
 		"pressureTrend":                       str,
 		"airDensity":                          Density,
 
@@ -89,11 +89,6 @@ summaryAtlas = {
 		'strike_count_3h':                    'strikes3h',
 		'wind_chill':                         'windChill'
 }
-
-
-def dewpointCalc(temperature: Celsius, rh: Humidity) -> Celsius:
-	c = (243.04 * temperature.c / (17.625 + temperature.c)) + math.log(rh / 100.0)
-	return Celsius((17.625 * c) / (243.04 - c))
 
 
 def airDensityCalc(temperature: Celsius, pressure: Pressure):
