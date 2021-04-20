@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>websocket</class>
- <widget class="QWidget" name="websocket">
+ <class>socketTab</class>
+ <widget class="QWidget" name="socketTab">
   <property name="geometry">
    <rect>
     <x>0</x>
