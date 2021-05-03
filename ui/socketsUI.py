@@ -1,15 +1,15 @@
-import logging
+from PySide6.QtCore import Signal, Slot
+from PySide6.QtWidgets import QTabWidget, QWidget
 
-from PySide6 import QtCore
-from PySide6.QtCore import QEvent, Signal, Slot
-from PySide6.QtWidgets import QFrame, QGridLayout, QTabWidget, QWidget
-
-from messages import DeviceStatusMessage, LightningMessage, Observation, TempestMessage, WindMessage, HubStatusMessage
+from messages import DeviceStatusMessage, HubStatusMessage, LightningMessage, Observation, TempestMessage, WindMessage
+from observer import Station
 from sockets import UDPMessenger, WSMessenger
 from ui.socketTab_UI import Ui_socketTab
 
 
 class Tab(QWidget, Ui_socketTab):
+
+	station: Station
 
 	connectionSignal = Signal(bool)
 
@@ -28,10 +28,10 @@ class Tab(QWidget, Ui_socketTab):
 			self.stop()
 		self.connectionSignal.emit(self.messenger.running)
 
-	@Slot()
-	def setStation(self, value):
-		print(f'station set to: {value}')
-		self.messenger.setStation(value)
+	@Slot(Station)
+	def setStation(self, station: Station):
+		print(f'station set to: {station}')
+		self.messenger.setStation(station)
 
 	def start(self):
 		self.messenger.begin()
@@ -57,7 +57,7 @@ class Tab(QWidget, Ui_socketTab):
 			self.setWindGroup(event)
 			self.setAirGroup(event)
 			self.setSolarGroup(event)
-			self.setSkyGroup(event)
+			# self.setSkyGroup(event)
 		else:
 			pass
 
@@ -104,6 +104,7 @@ class Tab(QWidget, Ui_socketTab):
 		self.uv(event.uvi)
 
 	def setAirGroup(self, event):
+		self.window().menuBar.title = str(event.temperature)
 		self.temperature(event.temperature)
 		self.feelsLike(event.feelsLike)
 		self.dewpoint(event.dewpoint)

@@ -7,12 +7,13 @@ import websocket
 from PySide6.QtCore import QObject, QThread, Signal
 
 from messages import *
+from observer import Station
 
 
 class _Messenger(QObject):
 	signal: Signal = Signal(Observation)
 	running: bool = False
-	stationID: int
+	_station: Station
 
 	messageTypes = {'rapid_wind': WindMessage, 'evt_precip': RainStartMessage, 'evt_strike': LightningMessage,
 	                'obs_st':     TempestMessage, 'obs_air': AirMessage, 'obs_sky': SkyMessage,
@@ -25,6 +26,7 @@ class _Messenger(QObject):
 		self.push(sample)
 
 	def push(self, message: dict):
+		pprint.pprint(message)
 		if message['type'] in self.messageTypes:
 			logging.debug("MESSAGE RECEIVED")
 			pprint.pprint(message)
@@ -34,8 +36,12 @@ class _Messenger(QObject):
 		else:
 			logging.debug("INVALID MESSAGE TYPE", message['type'])
 
-	def setStation(self, value):
-		self.stationID = int(value)
+	def setStation(self, value: Station):
+		self._station = value
+
+	@property
+	def stationID(self):
+		return self._station.stationID
 
 
 class WSMessenger(QThread, _Messenger):
@@ -53,6 +59,9 @@ class WSMessenger(QThread, _Messenger):
 		                                 on_close=self.on_close)
 
 	def genMessage(self, messageType: str) -> dict[str:str]:
+		pprint.pprint({"type":      messageType,
+		        "device_id": self.stationID,
+		        "id":        self.uuid})
 		return {"type":      messageType,
 		        "device_id": self.stationID,
 		        "id":        self.uuid}
@@ -73,7 +82,8 @@ class WSMessenger(QThread, _Messenger):
 		ws.send(dumps(self.genMessage('listen_rapid_start')))
 
 	def on_message(self, ws, message):
-		self.push(loads(message))
+		pprint.pprint(message)
+		# self.push(loads(message))
 
 	def on_error(self, ws, error):
 		print(error)

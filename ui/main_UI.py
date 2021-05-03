@@ -16,13 +16,14 @@ from ui.socketsUI import TabHolder
 from ui.socketsUI import WSTab
 from ui.socketsUI import UDPTab
 from ui.connectionToggle import connectionToggle
+from ui.stationSelector import StationSelector
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(504, 399)
+        MainWindow.resize(504, 419)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_3 = QVBoxLayout(self.centralwidget)
@@ -31,9 +32,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setContentsMargins(-1, 0, -1, 0)
         self.tabs = TabHolder(self.centralwidget)
         self.tabs.setObjectName(u"tabs")
-        self.tabs.setTabShape(QTabWidget.Rounded)
-        self.tabs.setElideMode(Qt.ElideRight)
-        self.tabs.setUsesScrollButtons(False)
         self.udpTab = QWidget()
         self.udpTab.setObjectName(u"udpTab")
         self.verticalLayout = QVBoxLayout(self.udpTab)
@@ -195,9 +193,9 @@ class Ui_MainWindow(object):
         self.gridLayout = QGridLayout(self.frame)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.stationSelection = QComboBox(self.frame)
+        self.stationSelection = StationSelector(self.frame)
         self.stationSelection.setObjectName(u"stationSelection")
-        self.stationSelection.setMaximumSize(QSize(120, 16777215))
+        self.stationSelection.setMaximumSize(QSize(200, 16777215))
         self.stationSelection.setCurrentText(u"")
         self.stationSelection.setFrame(False)
 
@@ -217,9 +215,6 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 504, 24))
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
         QWidget.setTabOrder(self.connectionToggle, self.stationSelection)
         QWidget.setTabOrder(self.stationSelection, self.tabs)
 
@@ -229,10 +224,7 @@ class Ui_MainWindow(object):
         self.connectionToggle.clicked.connect(self.connectionToggle.buttonClicked)
         self.udp.connectionSignal.connect(self.connectionToggle.refreshText)
         self.webSocket.connectionSignal.connect(self.connectionToggle.refreshText)
-        self.stationSelection.currentTextChanged.connect(self.webSocket.setStation)
-
-        self.tabs.setCurrentIndex(1)
-
+        self.stationSelection.stationSelection.connect(self.webSocket.setStation)
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>399</height>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,18 +26,6 @@
     </property>
     <item>
      <widget class="TabHolder" name="tabs">
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <property name="elideMode">
-       <enum>Qt::ElideRight</enum>
-      </property>
-      <property name="usesScrollButtons">
-       <bool>false</bool>
-      </property>
       <widget class="QWidget" name="udpTab">
        <attribute name="title">
         <string>UDP</string>
@@ -378,10 +366,10 @@
         <number>0</number>
        </property>
        <item row="0" column="1" rowspan="2" colspan="2">
-        <widget class="QComboBox" name="stationSelection">
+        <widget class="StationSelector" name="stationSelection">
          <property name="maximumSize">
           <size>
-           <width>120</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
          </property>
@@ -421,7 +409,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>
   <customwidget>
@@ -441,7 +428,7 @@
    <container>1</container>
    <slots>
     <signal>connectionSignal(bool)</signal>
-    <slot>setStation(QString)</slot>
+    <slot>setStation(Station)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -461,6 +448,15 @@
     <slot>changeChildTab(Tab)</slot>
     <slot>buttonClicked(bool)</slot>
     <slot>refreshText(bool)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>StationSelector</class>
+   <extends>QComboBox</extends>
+   <header>ui/stationSelector</header>
+   <slots>
+    <signal>stationSelection(Station)</signal>
+    <slot>convertSelection(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -553,17 +549,17 @@
   </connection>
   <connection>
    <sender>stationSelection</sender>
-   <signal>currentTextChanged(QString)</signal>
+   <signal>stationSelection(Station)</signal>
    <receiver>webSocket</receiver>
-   <slot>setStation(QString)</slot>
+   <slot>setStation(Station)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>182</x>
-     <y>351</y>
+     <x>222</x>
+     <y>398</y>
     </hint>
     <hint type="destinationlabel">
      <x>251</x>
-     <y>190</y>
+     <y>213</y>
     </hint>
    </hints>
   </connection>
