@@ -23,7 +23,6 @@ class connectionToggle(QPushButton):
 
 	@Slot(bool)
 	def buttonClicked(self):
-
 		# self._currentTab.start()
 		print("Connect button clicked")
 		self._currentTab.toggle()

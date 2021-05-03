@@ -58,10 +58,10 @@ class Station(dict):
 	def observers(self) -> list[Observer]:
 		return self._observers
 
-	def __repr__(self):
+	def __repr__(self) -> str:
 		return self.name
 
-	def __str__(self):
+	def __str__(self) -> str:
 		return self.name
 
 	@property
