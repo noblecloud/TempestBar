@@ -26,7 +26,6 @@ class _Messenger(QObject):
 		self.push(sample)
 
 	def push(self, message: dict):
-		pprint.pprint(message)
 		if message['type'] in self.messageTypes:
 			logging.debug("MESSAGE RECEIVED")
 			pprint.pprint(message)
@@ -82,8 +81,7 @@ class WSMessenger(QThread, _Messenger):
 		ws.send(dumps(self.genMessage('listen_rapid_start')))
 
 	def on_message(self, ws, message):
-		pprint.pprint(message)
-		# self.push(loads(message))
+		self.push(loads(message))
 
 	def on_error(self, ws, error):
 		print(error)
