@@ -18,6 +18,12 @@ class Device:
 		firmwareRevision = data['firmware_revision']
 		self.name = data['device_meta']['name']
 
+	def __repr__(self) -> str:
+		return self.name
+
+	def __str__(self) -> str:
+		return self.name
+
 
 class Hub(Device):
 	deviceType = "hub"
@@ -37,6 +43,7 @@ class Observer(Device):
 class Station(dict):
 	_hub: Hub
 	_observers: list[Observer] = []
+	_defaultDevice: Observer
 
 	def __init__(self, data):
 
@@ -47,7 +54,9 @@ class Station(dict):
 			if deviceType == 'HB':
 				self._hub = Hub(device)
 			if deviceType == 'ST':
-				self._observers.append(Observer(device))
+				observer = Observer(device)
+				self._observers.append(observer)
+				self._defaultDevice = observer
 		super(Station, self).__init__({**data, 'hub': self._hub, 'observers': self._observers})
 
 	@property
@@ -57,12 +66,6 @@ class Station(dict):
 	@property
 	def observers(self) -> list[Observer]:
 		return self._observers
-
-	def __repr__(self) -> str:
-		return self.name
-
-	def __str__(self) -> str:
-		return self.name
 
 	@property
 	def name(self):
@@ -79,6 +82,11 @@ class Station(dict):
 	@property
 	def subscriptionID(self):
 		return list(station.deviceID for station in self._observers)
+
+	@property
+	def defaultDevice(self) -> Observer:
+		return self._defaultDevice
+
 
 
 class StationList(list[Station]):

@@ -16,7 +16,7 @@ class _Messenger(QObject):
 	_station: Station
 
 	messageTypes = {'rapid_wind': WindMessage, 'evt_precip': RainStartMessage, 'evt_strike': LightningMessage,
-	                'obs_st':     TempestMessage, 'obs_air': AirMessage, 'obs_sky': SkyMessage,
+	                'obs_st':     TempestMessage, 'obs_sky': SkyMessage,
 	                'hub_status': HubStatusMessage, 'device_status': DeviceStatusMessage}
 
 	def testMessage(self):
@@ -26,6 +26,7 @@ class _Messenger(QObject):
 		self.push(sample)
 
 	def push(self, message: dict):
+		pprint.pprint(message)
 		if message['type'] in self.messageTypes:
 			logging.debug("MESSAGE RECEIVED")
 			pprint.pprint(message)
@@ -40,7 +41,7 @@ class _Messenger(QObject):
 
 	@property
 	def stationID(self):
-		return self._station.stationID
+		return self._station.defaultDevice.deviceID
 
 
 class WSMessenger(QThread, _Messenger):
