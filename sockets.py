@@ -2,8 +2,8 @@ from json import dumps, loads
 from secrets import token_urlsafe as genUUID
 
 import websocket
-from PySide2.QtCore import QObject, QThread, Signal
-from PySide2.QtNetwork import QUdpSocket
+from PySide6.QtCore import QObject, QThread, Signal
+from PySide6.QtNetwork import QUdpSocket
 
 from messages import *
 from observer import Device, Station
