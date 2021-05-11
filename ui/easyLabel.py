@@ -1,5 +1,5 @@
-from PySide6.QtCore import QObject
-from PySide6.QtWidgets import QLabel
+from PySide2.QtCore import QObject
+from PySide2.QtWidgets import QLabel
 from WeatherUnits import Measurement
 
 

@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Callable
 
-from PySide6.QtCore import Signal, Slot
+from PySide2.QtCore import Signal, Slot
 from rumps import MenuItem
 
 from sockets import Messenger, UDPMessenger, WSMessenger

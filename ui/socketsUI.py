@@ -1,5 +1,5 @@
-from PySide6.QtCore import Signal, Slot, Qt
-from PySide6.QtWidgets import QWidget
+from PySide2.QtCore import Signal, Slot, Qt
+from PySide2.QtWidgets import QWidget
 
 from messages import DeviceStatusMessage, HubStatusMessage, LightningMessage, Observation, TempestMessage, WindMessage
 from observer import Station

@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Callable
 
-from PySide6.QtCore import Signal
+from PySide2.QtCore import Signal
 from rumps import MenuItem
 from observer import Device, Station, StationList
 

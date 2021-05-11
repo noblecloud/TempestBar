@@ -1,5 +1,5 @@
-from PySide6.QtCore import Signal, Slot
-from PySide6.QtWidgets import QPushButton
+from PySide2.QtCore import Signal, Slot
+from PySide2.QtWidgets import QPushButton
 
 
 class connectionToggle(QPushButton):

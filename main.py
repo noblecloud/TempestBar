@@ -1,8 +1,8 @@
 import rumps
 import WeatherUnits
-from PySide6.QtCore import Property, QAbstractAnimation, QEvent, QPropertyAnimation, QTimer, Signal, Slot, Qt
-from PySide6.QtGui import QCursor
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide2.QtCore import Property, QAbstractAnimation, QEvent, QPropertyAnimation, QTimer, Signal, Slot, Qt
+from PySide2.QtGui import QCursor
+from PySide2.QtWidgets import QApplication, QMainWindow
 from rumps import MenuItem
 
 from observer import Station
@@ -14,9 +14,6 @@ from ui.stationSelector import StationSelector
 import AppKit
 info = AppKit.NSBundle.mainBundle().infoDictionary()
 info["LSBackgroundOnly"] = "1"
-
-
-
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 	menuBar: rumps.App
