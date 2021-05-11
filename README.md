@@ -1,5 +1,5 @@
 # TempestBar
-A very simple proof of concept for displaying UDP data on a desktop using Python3 and PySide6/Qt.  Will hopefully live in the system tray/menu bar.
+A very simple proof of concept for displaying UDP data on a desktop using Python3 and PySide2.
 
 ## Requirements
  - [Python 3.9](https://www.python.org/downloads/)
@@ -21,11 +21,12 @@ Run with
 ## TODO
 - [x] Display incoming UDP data
 - [x] Add support for websocket subscription
-- [ ] Implement minimize to tray/status bar usage to display temperature or selected measurement
-- [ ] Add derived measurements (Already added some)
+- [x] Implement minimize to tray/status bar usage to display temperature
+- [ ] Add measurement selection
+- [x] Add derived measurements (Already added some)
 - [ ] GUI configuration editor
 - [x] Auto hide irrelevant sections
 - [ ] Add display of UDP datagram history
 - [ ] Plot data over time
-- [ ] Add support for multiple devices and hubs
+- [x] Add support for multiple devices and hubs
 - [ ] BLE Subscription?
