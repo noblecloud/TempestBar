@@ -3,16 +3,16 @@ A very simple proof of concept for displaying UDP data on a desktop using Python
 
 ## Requirements
  - [Python 3.9](https://www.python.org/downloads/)
- - [PySide6](https://pypi.org/project/PySide6/)
+ - [PySide2](https://pypi.org/project/PySide2/)
  - [WeatherUnits](https://pypi.org/project/WeatherUnits/)
  - [websockets](https://pypi.org/project/websockets/)
  - [pytz](https://pypi.org/project/pytz/)
  - WeatherFlow Station (only tested with [Tempest](https://weatherflow.com/tempest-weather-system/))
 
 ## Usage
-Install PySide6 with
+Install PySide2 with
 
-	pip install PySide6
+	pip install PySide2
 
 Run with
 
