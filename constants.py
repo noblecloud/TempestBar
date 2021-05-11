@@ -1,7 +1,5 @@
-import math
-
 from WeatherUnits.defaults.WeatherFlow import Wind
-from WeatherUnits.defaults.WeatherFlow.units import Density, PrecipitationType, Temperature, Precipitation
+from WeatherUnits.defaults.WeatherFlow.units import Density, Precipitation
 from WeatherUnits.length import Kilometer, Millimeter
 from WeatherUnits.others import Direction, Humidity, Lux, RadiantFlux, Volts
 from WeatherUnits.pressure import Pressure, hPa

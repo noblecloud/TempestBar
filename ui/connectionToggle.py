@@ -1,23 +1,20 @@
 from PySide6.QtCore import Signal, Slot
 from PySide6.QtWidgets import QPushButton
-from ui.socketsUI import Tab
 
 
 class connectionToggle(QPushButton):
 
 	_connected: bool = False
-	_currentTab: Tab = None
 
 	def connection(self, status: bool):
 		self._connected = status
 		self.refreshText()
 
-	@Slot(Tab)
-	def changeChildTab(self, child: Tab):
+	@Slot()
+	def changeChildTab(self, child):
 		print(f"button received tab {child.__class__.__name__}")
 		if self._currentTab and self._currentTab.running:
 			self._currentTab.stop()
-		self._currentTab = child
 		self.refreshText(self._currentTab.running)
 
 
