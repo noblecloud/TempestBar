@@ -1,43 +1,91 @@
-from PySide6.QtCore import Signal, Slot
-from PySide6.QtWidgets import QTabWidget, QWidget
+from PySide6.QtCore import Signal, Slot, Qt
+from PySide6.QtWidgets import QWidget
 
 from messages import DeviceStatusMessage, HubStatusMessage, LightningMessage, Observation, TempestMessage, WindMessage
 from observer import Station
-from sockets import UDPMessenger, WSMessenger
-from ui.socketTab_UI import Ui_socketTab
+from sockets import Messenger, WSMessenger
+from ui.info_UI import Ui_info as InfoUI
+
+import objc
+from Foundation import *
+from AppKit import *
+from PyObjCTools import AppHelper
 
 
-class Tab(QWidget, Ui_socketTab):
+class QMacCocoaViewContainer(QWidget):
+	""" QMacCocoaViewContainer(sip.voidptr, parent: QWidget = None) """
+
+	def cocoaView(self):  # real signature unknown; restored from __doc__
+		""" cocoaView(self) -> sip.voidptr """
+		pass
+
+	def setCocoaView(self, sip_voidptr):  # real signature unknown; restored from __doc__
+		""" setCocoaView(self, sip.voidptr) """
+		pass
+
+	def __init__(self, sip_voidptr, parent=None):  # real signature unknown; restored from __doc__
+		pass
+
+
+class Info(QWidget, InfoUI):
 
 	station: Station
+	messenger: Messenger = WSMessenger()
 
 	connectionSignal = Signal(bool)
 
 	def __init__(self, *args, **kwargs):
-		super(Tab, self).__init__(*args, **kwargs)
+		super(Info, self).__init__(*args, **kwargs)
 		self.setupUi(self)
 		self.skyGroup.setHidden(True)
-		self.setMaximumSize(630, 368)
 		self.installEventFilter(self)
+		self.setAttribute(Qt.WA_TranslucentBackground)
 		self.messenger.signal.connect(self.updateItems)
+		frame = NSMakeRect(0, 0, self.width(), self.height())
+		view = objc.objc_object(c_void_p=self.winId().__int__())
+
+		visualEffectView = NSVisualEffectView.new()
+		visualEffectView.setAutoresizingMask_(NSViewWidthSizable | NSViewHeightSizable)
+		visualEffectView.setWantsLayer_(True)
+		visualEffectView.setFrame_(frame)
+		visualEffectView.setState_(NSVisualEffectStateActive)
+		visualEffectView.setMaterial_(NSVisualEffectMaterialHUDWindow)
+		visualEffectView.setBlendingMode_(NSVisualEffectBlendingModeBehindWindow)
+		visualEffectView.setWantsLayer_(True)
+
+		self.setAttribute(Qt.WA_TranslucentBackground, True)
+
+		window = view.window()
+		content = window.contentView()
+
+		container = QMacCocoaViewContainer(0, self)
+		content.addSubview_positioned_relativeTo_(visualEffectView, NSWindowBelow, container)
+
+		window.setTitlebarAppearsTransparent_(True)
+		window.setStyleMask_(window.styleMask() | NSFullSizeContentViewWindowMask)
+
+		appearance = NSAppearance.appearanceNamed_('NSAppearanceNameVibrantDark')
+		window.setAppearance_(appearance)
+
+		self.repaint()
+
 
 	def toggle(self) -> bool:
 		if not self.messenger.running:
 			self.start()
 		elif self.messenger.running:
 			self.stop()
-		self.connectionSignal.emit(self.messenger.running)
 
 	@Slot(Station)
 	def setStation(self, station: Station):
-		print(f'station set to: {station}')
 		self.messenger.setStation(station)
 
 	def start(self):
 		self.messenger.begin()
 
 	def stop(self):
-		self.messenger.end()
+		if self.messenger.running:
+			self.messenger.end()
 
 	@property
 	def running(self) -> bool:
@@ -125,29 +173,3 @@ class Tab(QWidget, Ui_socketTab):
 		self.wind(event.speed)
 		if event.speed != 0:
 			self.windDirection(event.direction)
-
-
-class TabHolder(QTabWidget):
-
-	tabSignal = Signal(Tab)
-
-	@Slot(int)
-	def sendTab(self, int):
-		print('sending tab: ', end='')
-		tab = self.currentWidget().layout().itemAt(0).widget()
-		print(tab.__class__.__name__)
-		self.tabSignal.emit(tab)
-
-
-class UDPTab(Tab):
-
-	def __init__(self, *args, **kwargs):
-		self.messenger = UDPMessenger()
-		super(UDPTab, self).__init__(*args, **kwargs)
-
-
-class WSTab(Tab):
-
-	def __init__(self, *args, **kwargs):
-		self.messenger = WSMessenger()
-		super(WSTab, self).__init__(*args, **kwargs)
