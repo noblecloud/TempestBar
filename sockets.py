@@ -1,16 +1,15 @@
 from json import dumps, loads
-from pprint import pprint
 from secrets import token_urlsafe as genUUID
-import logging
 
 import websocket
-from PySide6.QtCore import QObject, QThread, Signal
+from PySide2.QtCore import QObject, QThread, Signal
+from PySide2.QtNetwork import QUdpSocket
 
 from messages import *
-from observer import Station
+from observer import Device, Station
 
 
-class _Messenger(QObject):
+class Messenger(QObject):
 	signal: Signal = Signal(Observation)
 	running: bool = False
 	_station: Station
@@ -26,10 +25,8 @@ class _Messenger(QObject):
 		self.push(sample)
 
 	def push(self, message: dict):
-		pprint.pprint(message)
 		if message['type'] in self.messageTypes:
 			logging.debug("MESSAGE RECEIVED")
-			pprint.pprint(message)
 			messageType = self.messageTypes[message['type']]
 			message = messageType(message)
 			self.signal.emit(message)
@@ -39,12 +36,8 @@ class _Messenger(QObject):
 	def setStation(self, value: Station):
 		self._station = value
 
-	@property
-	def stationID(self):
-		return self._station.defaultDevice.deviceID
 
-
-class WSMessenger(QThread, _Messenger):
+class WSMessenger(QThread, Messenger):
 	token = '61173523-5a94-4392-bc6b-2e1d375d17fe'
 	uri = 'wss://ws.weatherflow.com/swd/data?token=' + token
 	uuid: str
@@ -58,13 +51,11 @@ class WSMessenger(QThread, _Messenger):
 		                                 on_error=self.on_error,
 		                                 on_close=self.on_close)
 
-	def genMessage(self, messageType: str) -> dict[str:str]:
-		pprint.pprint({"type":      messageType,
-		        "device_id": self.stationID,
-		        "id":        self.uuid})
-		return {"type":      messageType,
-		        "device_id": self.stationID,
-		        "id":        self.uuid}
+	def genMessage(self, messageType: str, device: Device) -> dict[str:str]:
+		message = {"type":      messageType,
+		         "device_id": device.deviceID,
+		         "id":        self.uuid}
+		return message
 
 	def run(self):
 		self.WS.run_forever()
@@ -78,8 +69,9 @@ class WSMessenger(QThread, _Messenger):
 		self.WS.close()
 
 	def on_open(self, ws):
-		ws.send(dumps(self.genMessage('listen_start')))
-		ws.send(dumps(self.genMessage('listen_rapid_start')))
+		for device in self._station.observers:
+			ws.send(dumps(self.genMessage('listen_start', device)))
+			ws.send(dumps(self.genMessage('listen_rapid_start', device)))
 
 	def on_message(self, ws, message):
 		self.push(loads(message))
@@ -94,8 +86,7 @@ class WSMessenger(QThread, _Messenger):
 		self.WS.close()
 
 
-class UDPMessenger(_Messenger):
-	from PySide6.QtNetwork import QUdpSocket
+class UDPMessenger(Messenger):
 
 	udpSocket: QUdpSocket
 
