@@ -168,8 +168,8 @@ class TempestBar(rumps.App):
 		self.app.setQuitOnLastWindowClosed(False)
 		self.window.menuBar = self
 		self.app.aboutToQuit.connect(self.window.exitHandler)
-		# self.window.socketSignal.connect(self.window.receiveSocket)
-		# self.window.stationSignal.connect(self.window.receiveStation)
+		self.window.socketSignal.connect(self.window.receiveSocket)
+		self.window.stationSignal.connect(self.window.receiveStation)
 		self.menu.add(SocketSelector(self.window.socketSignal))
 		self.menu.add(StationSelector(self.window.stationSignal))
 		self.showHide = rumps.MenuItem('Show Window', callback=self.display)
